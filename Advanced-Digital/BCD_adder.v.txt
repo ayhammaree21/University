@@ -1,0 +1,459 @@
+//Ayham Maree - 1191408 - Advanced Digital Final Project
+`timescale 1ns/100ps  
+
+// 1- bit Full Adder
+// 1 Sum and 1 Carry
+
+module one_bit_fulladd (a,b,C_in,C_out,Sum);
+	output Sum;
+	output C_out;
+	input a;
+	input b;
+	input C_in;
+	wire and1, and2, and3;
+	
+
+	and #(8ns)(and1, a, b);
+	xor #(12ns)(Sum,C_in, a, b);
+    and #(8ns) (and2, C_in,a );
+	or  #(8ns)(C_out,and3 , and2,and1);
+	and #(8ns) (and3,C_in,b);
+	
+	
+endmodule 
+////////////////////////////////////////////////////
+
+// 4-bit Full Adder
+////////////////////////////////////////////////////
+////// 4 Sum and 4 Carry
+
+module four_bit_adder(a,b,C_in,C_out,FourBitSum);
+	output [3:0] FourBitSum;
+	output C_out;
+	input C_in;
+	input [3:0] a;
+	input [3:0] b;
+	wire [2:0] carries;
+	
+	one_bit_fulladd V1 (a[0],b[0],C_in,carries[0],FourBitSum[0]);
+	one_bit_fulladd V2 (a[1],b[1],carries[0],carries[1],FourBitSum[1]); 
+	one_bit_fulladd V3 (a[2],b[2],carries[1],carries[2],FourBitSum[2]);
+	one_bit_fulladd V4 (a[3],b[3],carries[2],C_out,FourBitSum[3]);
+	
+endmodule
+
+
+// BCD Chip using ripple carry adder
+////////////// BCD to sum from 0-9 and if more than 9 +6
+	
+module BCDChip_Stage1(a,b,C_in,C_out,sum);
+	input [3:0] a ,b;
+	input C_in;
+	output [3:0] sum;  
+	output C_out;
+	wire [3:0] S;
+	wire C;
+	wire a1,a2;
+	wire NotUsed;
+	wire[3:0] ZeroORSix;
+	assign ZeroORSix = {1'b0,C_out,C_out,1'b0};
+					 
+	four_bit_adder V1 (a,b,C_in,C,S);
+	
+	
+	and #(8ns) (a1,S[1] ,S[3]);
+	and #(8ns) (a2,S[2] ,S[3]);
+	or  #(8ns) (C_out,a1,a2,C); 
+	
+	
+	four_bit_adder V2 (S,ZeroORSix,0,NotUsed,sum);
+	
+endmodule 
+
+// 2-digit BCD Adder 
+
+
+/////////////////////// 2 instances from 1-digit bcd adder 
+module TWOdigitBCD_AdderStage1 (a,b,C_in, C_out,Sum);	 
+	parameter n=7;
+	output 	[n:0]Sum;
+	output C_out;
+	input [n:0]a, b;
+	input  C_in;
+	wire  firstC;
+	
+	
+	BCDChip V1 (a[3:0], b[3:0],C_in,firstC,Sum[3:0]);
+	
+	BCDChip V2 (a[n:4], b[n:4],firstC,C_out,Sum[n:4]);
+			
+endmodule
+
+
+
+
+// Test Genaretor for BCD Adder
+	////////////// Design Verification to input and ouput 
+module Behavioural_BCD_Genaretor (tin1,tin2,Ct,C_out,Sum,Reset,Clock);	
+	
+	output reg [7:0] tin1;
+	output reg [7:0] tin2;
+	output reg [7:0] Sum;
+	input Clock;
+	input Reset;  
+	output reg Ct;
+	output reg C_out;
+	
+	reg [4:0] C;
+	
+
+    always @(negedge Reset or posedge Clock)
+    begin 
+		
+		
+	case(Reset)
+			
+			   0: 
+				     begin
+			               tin1=0;
+			               tin2=0;
+			               Ct=0;	
+					 end 
+					 
+		       1: 
+				   begin
+			
+		                 case(Ct)
+		                       0:
+		                            begin 
+			                         
+										 Ct=1;		
+			    
+		
+		                           if(tin1[3:0]+ 4'b0001 > 9)
+			                           begin	
+										   
+                                              {C[1],tin1[3:0]} = tin1[3:0]+7;
+			    
+				                        end
+				   
+			                        else
+				                        begin
+					  
+					                          tin1[3:0] = tin1[3:0]+ 4'b0001 ;
+					                          C[1]=0;
+				                         end
+		
+		   
+		
+		                            if(tin1[7:4]  + C[1] > 9)
+			                             begin
+                                             {C[2],tin1[7:4]} = tin1[7:4]+6+C[1];
+			          
+			                             end	
+					
+			                        else
+			 	                         begin
+					 
+					                         tin1[7:4] = tin1[7:4]  + C[1];
+					                         C[2]=0;
+			                              end
+				 
+				 													   
+				 
+		     
+		
+		                              if( tin2[3:0]+C[2] > 9)
+			                               begin
+                                               {C[3],tin2[3:0]}= tin2[3:0]+6+C[2];
+			           
+			                               end
+					
+			                           else
+				                             begin
+					
+					                           tin2[3:0] = tin2[3:0]+C[2];
+					                           C[3]=0;
+				                               end
+				
+			 
+				
+		      	
+		
+		                               if(  tin2[7:4]+C[3]   > 9)
+			                                  begin					 
+					                          tin2[7:4] = tin2[7:4]+6+C[3];
+					                          C[4] = 1;
+											  
+			
+			                                   end 
+				   
+		                                else
+			                                	begin
+				                            	{C[4],tin2[7:4]} = tin2[7:4]+C[3] ;
+					
+			                                	end
+												
+										
+										
+										
+												
+									end	
+								1:
+									 Ct=0;
+											
+						  endcase
+				    end
+    endcase
+		      
+		C[0]=0;
+		C_out=0;
+		  
+		
+		if(tin1[3:0] + tin2[3:0] +Ct > 9)
+	    	begin
+            Sum[3:0] =tin1[3:0] + tin2[3:0]+Ct+6;
+			C[0]=1;
+			end	
+
+         else 
+		    begin
+				{C[0],Sum[3:0]} =tin1[3:0] + tin2[3:0] +Ct;
+			end
+		
+	
+		
+		if(tin1[7:4] + tin2[7:4] + C[0] > 9)
+			begin
+            Sum[7:4] = tin1[7:4] + tin2[7:4] + C[0]+6;
+			C_out=1;
+			end	
+			
+		else 
+			begin
+				{C_out,Sum[7:4]} = tin1[7:4] + tin2[7:4] + C[0];
+			end
+			
+		 $display("time: %0d    | CarryIn : %d   input 1 : %d%d           input 2: %d%d      |   Carry out : %b         SUM: %b         ",$time,Ct,tin1[7:4],tin1[3:0],tin2[7:4],tin2[3:0],C_out,Sum);
+		
+       end	
+
+endmodule 
+
+			  
+// BCD Analyzer
+
+//////////////// tp get error detection when error occured
+
+module BCDAnalyzer(testCOut,testSOut,realCOut,realSOut,testSum,realSum,realCarry,testCarry,Clock);
+	output reg [7:0] testSOut,realSOut;
+	output reg testCOut,realCOut ;
+	input  [7:0]testSum,realSum ;
+	input  realCarry,testCarry;
+	input Clock;
+
+always @(posedge Clock)	   
+	begin  
+		
+		
+		if(testSum != realSum || testCarry != realCarry)
+	 begin	
+		 $display("CRASH: Ouput of the BCD Adder is not correct !!"); 
+		 $display("The real value (%b) is not equal the test value (%b) ", {realCarry,realSum}, {testCarry,testSum});
+    	
+	end	
+		realCOut = realCarry;
+		realSOut = realSum;
+		testCOut=testCarry;
+		testSOut = testSum;
+	
+		
+	end	
+
+endmodule 
+
+// TestBench Stage1 Carry Ripple Adder
+//// to change the values of input and show all values in output 
+
+ 
+module testbench_Stage1;
+	wire [7:0]	testSOut , realSOut;
+	wire  testCOut, realCOut;
+	reg Clock;
+	reg Reset; 	
+	wire [7:0] tin1,tin2,testSum,realSum;
+	wire Ct;
+	wire realCarry,testCarry;
+	
+	
+	
+	
+	
+	Behavioural_BCD_Genaretor  V1 (tin1,tin2,Ct,testCarry,testSum,Reset,Clock);
+	TWOdigitBCD_Adder V2(tin1,tin2,Ct, realCarry,realSum);	
+	BCDAnalyzer  V3(testCOut,testSOut,realCOut,realSOut,testSum,realSum,realCarry,testCarry,Clock);
+	
+	
+	
+initial
+	begin	
+	
+		
+		    
+			Clock=0;
+			Reset=0;
+			#100ns;
+			Reset=1;
+			
+			#5000 $finish;
+		end
+		
+		
+    	always #140ns Clock=~Clock;
+
+
+	
+endmodule
+
+
+// Stage 2 - Carry Look Ahead Adder to Create 2-digit BCD Adder
+
+module LookAheadAdder(a,b,C_in,carryout,Sum);	 
+	
+input [3:0] a;
+input [3:0] b;
+input C_in;
+
+output [3:0] Sum;
+wire [2:0] C_out;
+output carryout;
+
+wire [3:0] p;
+wire [3:0] g;
+
+wire w [3:0];
+
+xor #(12ns) (p[0],a[0],b[0]);
+xor #(12ns) (p[1],a[1],b[1]);
+xor #(12ns) (p[2],a[2],b[2]);
+xor #(12ns) (p[3],a[3],b[3]); 
+
+
+and #(8ns) (g[0],a[0],b[0]);
+and #(8ns) (g[1],a[1],b[1]);
+and #(8ns) (g[2],a[2],b[2]);
+and #(8ns) (g[3],a[3],b[3]);
+
+and #(8ns) (w[0] , p[0] , C_in) ;
+or #(8ns) (C_out[0],w[0],g[0]) ;
+
+and #(8ns) (w[1] , p[1] , C_out[0]) ;
+or #(8ns) (C_out[1],w[1],g[1]) ; 
+
+
+and #(8ns) (w[2] , p[2] , C_out[1]) ;
+or #(8ns) (C_out[2],w[2],g[2]) ;
+
+
+and #(8ns) (w[3] , p[3] , C_out[2]) ;
+or #(8ns) (carryout,w[3],g[3]) ; 
+
+
+
+xor #(12ns) (Sum[0],p[0],C_in);	   
+xor #(12ns) (Sum[1],p[1],C_out[0]);
+xor #(12ns) (Sum[2],p[2],C_out[1]);	
+xor #(12ns) (Sum[3],p[3],C_out[2]);
+
+
+endmodule  	
+
+
+
+// BCD Chip using Carry Look Ahead Adder
+
+module BCDChip_Stage2(a,b,C_in,C_out,sum);
+	input [3:0] a ,b;
+	input C_in;
+	output [3:0] sum;  
+	output C_out;
+	wire [3:0] S;
+	wire C;
+	wire a1,a2;
+	wire NotUsed;
+	wire[3:0] ZeroORSix;
+	assign ZeroORSix = {1'b0,C_out,C_out,1'b0};
+					 
+	CarryLookAheadAdder V1 (a,b,C_in,C,S);
+	
+	
+	and #(8ns) (a1,S[1] ,S[3]);
+	and #(8ns) (a2,S[2] ,S[3]);
+	or  #(8ns) (C_out,a1,a2,C); 
+	
+	
+	LookAheadAdder V2 (S,ZeroORSix,0,NotUsed,sum);
+	
+endmodule 
+
+
+
+// 2- digit BCD Adder using Look Ahead Adder
+
+
+module TWOdigitBCD_AdderStage2 (a,b,C_in, C_out,Sum);	 
+	parameter n=7;
+	output 	[n:0]Sum;
+	output C_out;
+	input [n:0]a, b;
+	input  C_in;
+	wire  firstC;
+	
+	
+	BCDChip_Stage2 V1 (a[3:0], b[3:0],C_in,firstC,Sum[3:0]);
+	
+	BCDChip_Stage2 V2 (a[n:4], b[n:4],firstC,C_out,Sum[n:4]);
+			
+endmodule
+
+
+// testbench using  Carry Look Ahead Adder
+
+module testbench_Stage2;
+	wire [7:0]	testSOut , realSOut;
+	wire  testCOut, realCOut;
+	reg Clock;
+	reg Reset; 	
+	wire [7:0] tin1,tin2,testSum,realSum;
+	wire Ct;
+	wire realCarry,testCarry;
+	
+	
+	
+	
+	
+	Behavioural_BCD_Genaretor  V1 (tin1,tin2,Ct,testCarry,testSum,Reset,Clock);
+	TWOdigitBCD_AdderStage2 V2(tin1,tin2,Ct, realCarry,realSum);	
+	BCDAnalyzer  V3(testCOut,testSOut,realCOut,realSOut,testSum,realSum,realCarry,testCarry,Clock);
+	
+	
+	
+initial
+	begin	
+	
+		
+		    
+			Clock=0;
+			Reset=0;
+			#100ns;
+			Reset=1;
+			
+			#15000 $finish;
+		end
+		
+		
+    	always #72ns Clock=~Clock;
+
+
+	
+endmodule
