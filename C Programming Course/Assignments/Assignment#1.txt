@@ -1,0 +1,36 @@
+#include stdio.h
+#include stdlib.h
+
+int main()
+{int item,quant;
+    double price1,price2,Total_price1,Total_price2,Total_price,Tax,Grand_total;
+    printf(Enter item number and quantityn);
+   scanf(%dt%dt,&item,&quant);
+
+
+   FILE eFile;
+   eFile=fopen(230.txt,r);
+   fscanf(eFile,%lf%lf,&price1,&price2);
+
+   if (item==2)
+   {
+       Total_price1=price1quant;
+       printf(item number=%dt price1=%.2ft quantity=%dt Total price=%0.2fn,item,price1,quant,Total_price1);
+   }
+
+   else if (item==5)
+   {
+       Total_price2=price2quant;
+       printf(item number=%dt price=%.2ft quantity=%dt Total price=%0.2fn,item,price2,quant,Total_price2);
+   }
+   else
+   {
+       printf(item number =item not existn);
+   }
+
+   Total_price=Total_price1+Total_price2;
+   Tax=Total_price0.1;
+   Grand_total=Total_price+Tax;
+   printf(Tax=%0.2fn Grand total=%0.2fn,Tax,Grand_total);
+
+    return 0;

@@ -1,0 +1,73 @@
+#include <stdio.h>
+#include <stdlib.h>
+//Name : Al-Ayham Maree
+//Number : 1191408
+// Mamoun Nawhdah //lab section : 2
+
+int vowel(char c),max;
+int main()
+{
+    int countA=0;
+    int countE=0;
+    int countI=0;
+    int countO=0;
+    int countU=0;
+    char ch;
+    FILE* in;
+    in=fopen("Infile.txt","r");
+    if(in==NULL){
+        printf("file not found");
+        exit(1);
+    }else{
+        while(fscanf(in,"%c",&ch)!=EOF){
+         int f;
+         f=vowel(ch);
+         if(f==1){
+             if(ch=='a' || ch=='A'){
+                countA+=1;
+             }
+             if(ch=='e' || ch=='E'){
+                countE+=1;
+             }
+             if(ch=='i' || ch=='I'){
+                countI+=1;
+             }
+             if(ch=='o' || ch=='O'){
+                countO+=1;
+             }
+             if(ch=='u' || ch=='U'){
+                countU+=1;
+             }
+         }
+
+         max=countA;
+if(countE>max)
+
+max=countE;
+if(countI>countE)
+max=countI;
+if(countO<countI)
+max=countO;
+if(countU>countO)
+max=countU;
+
+        }
+        FILE* out;
+        out=fopen("result.txt","w");
+        fprintf(out,"A %d \n E %d \n I %d \n O %d \n U %d",countA,countE,countI,countO,countU);
+        fprintf(out,"\nThe highest occurrence is for the letter %c with %d occurrences",ch,max);
+
+        fclose(in);
+        fclose(out);
+    }
+
+    return 0;
+}
+int vowel(char c){
+if(c=='a' || c=='A' || c=='e' || c=='E'|| c=='i' || c=='I' || c=='o' || c=='O' || c=='u' || c=='U'){
+    return 1;
+}else{
+return 0;
+}
+
+}

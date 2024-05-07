@@ -1,0 +1,97 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <math.h>
+char is_nice(int num);
+int is_palindrome(int num);
+int main()
+{
+    int num,result;
+    char letter;
+    printf("Please enter a four digit number: \n");
+    scanf("%d",&num);
+    while(num<=999 || num > 9999)
+        {
+            printf("Please enter a four digit number: \n");
+            scanf("%d",&num);
+        }
+    printf("Select what do you want to do with the character 'a' or 'b' or 'c': \n");
+    printf("a) print whether the number is nice or not\n");
+    printf("b) print whether the number divisible by three but not divisible by five or not\n");
+    printf("c) print whether the number is palindrome or not\n");
+    scanf(" %c",&letter);
+    printf("%d ", num);
+    switch(letter)
+    {
+    case 'a':
+        if(is_nice(num) == 'y')
+        {
+            printf("is a nice number");
+        }
+        else
+        {
+            printf("isn't a nice number");
+        }
+        break;
+        case 'b':
+        if(num%3==0 && num%5!=0)
+        {
+            printf("number is divisible by three but its not divisible by 5");
+        }
+        else
+        {
+            printf("not divisible");
+        }
+        break;
+        case 'c':
+        result=is_palindrome(num);
+        if(is_palindrome(num))
+        {
+            printf("is a palindrome number");
+        }
+        else
+        {
+            printf("is not a palindrome number");
+        }
+        break;
+    }
+    return 0;
+}
+char is_nice(int num)
+{
+    int a,b,c,d;
+    char r;
+    a=num%10;
+    num=num/10;
+    b=num%10;
+    num=num/10;
+    c=num%10;
+    num=num/10;
+    d=num;
+    r = 'y';
+    if(a==7 || b==7 || c==7 || d==7)
+    {
+        return r;
+    }
+    else
+    {
+        r = 'n';
+        return r;
+    }
+}
+int is_palindrome(int num)
+{
+    int th,h,t,o,newnumber;
+    th=num/1000;
+    h=(num/100)%10;
+    t=(num/10)%10;
+    o=num%10;
+    newnumber=(o*1000)+(t*100)+(h*10)+(th);
+    if(newnumber==num)
+    {
+        return 1;
+    }
+    else
+    {
+        return 0;
+    }
+}
