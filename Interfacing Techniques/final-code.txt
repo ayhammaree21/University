@@ -1,0 +1,168 @@
+#include <L298N.h>
+#include <HCSR04.h>
+
+#define TRIG_PIN_LEFT 26
+#define ECHO_PIN_LEFT 27
+
+#define TRIG_PIN_RIGHT 24
+#define ECHO_PIN_RIGHT 25
+
+#define ENCODER1_PIN_A 2
+#define ENCODER1_PIN_B 3
+
+#define ENCODER2_PIN_A 18
+#define ENCODER2_PIN_B 19
+
+#define MOTOR1_PIN_IN1 6
+#define MOTOR1_PIN_IN2 7
+#define MOTOR1_PIN_EN 8
+
+#define MOTOR2_PIN_IN1 10
+#define MOTOR2_PIN_IN2 9
+#define MOTOR2_PIN_EN 11
+
+#define IR_SENSOR_FRONT_PIN 12
+#define IR_SENSOR_LEFT_PIN 43
+#define IR_SENSOR_RIGHT_PIN 42
+
+int speed = 60;
+
+L298N motor1(MOTOR1_PIN_EN,MOTOR1_PIN_IN1, MOTOR1_PIN_IN2);
+L298N motor2(MOTOR2_PIN_EN,MOTOR2_PIN_IN1, MOTOR2_PIN_IN2);
+HCSR04 leftSensor(TRIG_PIN_LEFT, ECHO_PIN_LEFT);
+HCSR04 rightSensor(TRIG_PIN_RIGHT, ECHO_PIN_RIGHT);
+
+volatile int encoder1Pos = 0;
+volatile int encoder2Pos = 0;
+unsigned int leftDistance = 0;
+unsigned int rightDistance = 0;
+
+void setup() {
+  Serial.begin(9600);
+  motor1.setSpeed(speed);
+  motor2.setSpeed(speed);
+  pinMode(ENCODER1_PIN_A, INPUT);
+  pinMode(ENCODER1_PIN_B, INPUT);
+  pinMode(ENCODER2_PIN_A, INPUT);
+  pinMode(ENCODER2_PIN_B, INPUT);
+  attachInterrupt(digitalPinToInterrupt(ENCODER1_PIN_A), updateEncoder1, CHANGE);
+  attachInterrupt(digitalPinToInterrupt(ENCODER2_PIN_A), updateEncoder2, CHANGE);
+}
+
+void loop() {
+
+  bool isWallFront = IRSensorFront();
+  bool isWallLeft = IRSensorLeft();
+  bool isWallRight = IRSensorRight();
+
+   if (!isWallLeft){ 
+    turnLeft();
+  }
+  else if (!isWallRight && isWallLeft && isWallFront){ 
+    turnRight();
+  }
+  else if (isWallRight && isWallLeft && isWallFront){
+    turnAround();
+  }
+  else{
+    goStraight();
+    }
+}
+
+void goStraight() {
+  motor1.forward();
+  motor2.forward();
+  calibrate();
+}
+
+void calibrate(){
+    leftDistance = leftSensor.dist();
+    rightDistance = rightSensor.dist();
+
+    if (abs(leftDistance - rightDistance) <= 2){
+           motor1.forward();
+           motor2.forward();
+    }
+
+    else if( leftDistance <= 5 ){
+           motor2.forward();
+           motor1.backward(); 
+           while(leftDistance <= 5){
+              leftDistance = leftSensor.dist();
+           }      
+    }
+    else if (rightDistance <= 5){
+           motor1.forward();
+           motor2.backward(); 
+           while(rightDistance <= 5){
+              rightDistance = rightSensor.dist();
+           } 
+    }
+}
+
+void turnLeft() {
+  motor1.forward();
+  motor2.backward();
+  while (encoder1Pos < 50) {
+    // Turn left until the robot is facing left
+  }
+  motor1.stop();
+  motor2.stop();
+  encoder1Pos = 0;
+  encoder2Pos = 0;
+}
+
+void turnRight() {
+  motor1.backward();
+  motor2.forward();
+  while (encoder2Pos < 50) {
+  }
+  motor1.stop();
+  motor2.stop();
+  encoder1Pos = 0;
+  encoder2Pos = 0;
+}
+
+void turnAround() {
+  int targetPos = 800; // calculate the target encoder position for a 360 degree turn
+  motor1.forward();
+  motor2.backward();
+  while (abs(encoder1Pos) + abs(encoder2Pos) < targetPos) {
+    // wait for the robot to turn around 360 degrees
+  }
+  motor1.stop();
+  motor2.stop();
+  encoder1Pos = 0;
+  encoder2Pos = 0;
+}
+
+void updateEncoder1() {
+  if (digitalRead(ENCODER1_PIN_A) == digitalRead(ENCODER1_PIN_B)) {
+    encoder1Pos--;
+  }
+  else {
+    encoder1Pos++;
+  }
+}
+
+void updateEncoder2() {
+
+  if (digitalRead(ENCODER2_PIN_A) == digitalRead(ENCODER2_PIN_B)) {
+    encoder2Pos--;
+  }
+  else {
+    encoder2Pos++;
+  }
+}
+
+bool IRSensorFront() {
+  return digitalRead(IR_SENSOR_FRONT_PIN) == 0;
+}
+
+bool IRSensorLeft() {
+  return digitalRead(IR_SENSOR_LEFT_PIN) == 0;
+}
+
+bool IRSensorRight() {
+  return digitalRead(IR_SENSOR_RIGHT_PIN) == 0;
+}
