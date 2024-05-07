@@ -1,1 +1,1 @@
-MultiCycle MIPS
+Multicycle MIPS
