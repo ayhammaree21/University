@@ -1,0 +1,395 @@
+from _ast import While
+from math import exp
+import random as rand
+import numpy as np
+import sys
+import time
+
+# time sum
+# when call 1 player mode store time of start
+# when choosing solve or filling all the spaces we store time final and Tb = TF-TS
+M = 9
+arr = np.zeros((9, 9))
+solved = np.zeros((9, 9))
+def acceptable(i, j, x, sudoku):
+    ni = i - i % 3  # 0,1,2
+    nj = j - j % 3
+    return not ((x in sudoku[i]) or  # contains
+                (x in (sudoku[a][j] for a in range(9))) or
+                x in (sudoku[a][b] for a in range(ni, ni + 3) for b in range(nj, nj + 3)))
+
+
+def randomize(sudoku, n=0):
+    i = int(n / 9)
+    j = n % 9
+
+    def acceptableij(xx):
+        return acceptable(i=i, j=j, x=xx, sudoku=sudoku)
+
+    x = list(filter(acceptableij, [xx for xx in range(1, 10)]))
+
+    while len(x) != 0:
+        num = x[(rand.randint(0, len(x) - 1))]
+        x.remove(num)
+        sudoku[i][j] = num
+        if 81 == n + 1 or randomize(sudoku, n + 1):
+            return True
+        sudoku[i][j] = 0
+    return False
+
+def solve(grid, row, col, num):
+    for x in range(9):
+        if grid[row][x] == num:
+            return False
+
+    for x in range(9):
+        if grid[x][col] == num:
+            return False
+
+    startRow = row - row % 3
+    startCol = col - col % 3
+    for i in range(3):
+        for j in range(3):
+            if grid[i + startRow][j + startCol] == num:
+                return False
+    return True
+
+
+def Suduko(grid, row, col):
+    if (row == M - 1 and col == M):
+        return True
+    if col == M:
+        row += 1
+        col = 0
+    if grid[row][col] > 0:
+        return Suduko(grid, row, col + 1)
+    for num in range(1, M + 1, 1):
+
+        if solve(grid, row, col, num):
+
+            grid[row][col] = num
+            if Suduko(grid, row, col + 1):
+                return True
+        grid[row][col] = 0
+    return False
+
+
+def generate(dificulty):
+    cells = int((dificulty == "easy") * 32 + (dificulty == "medium") * 20 + (dificulty == "hard") * 8)
+    val = int(rand.randint(1, 9))
+    row = int(rand.randint(1, 9))
+    col = int(rand.randint(1, 9))
+    solved[row - 1][col - 1] = val
+    Suduko(solved, 0, 0)
+    available = []
+    for i in range(9):
+        for j in range(9):
+            available.append([i, j])
+
+    for i in range(0, cells):
+        l = int(1)
+        r = int(len(available))
+        # print(r)
+        ind = int(rand.randint(l, r))
+        ind -= 1
+        arr[available[ind][0]][available[ind][1]] = solved[available[ind][0]][available[ind][1]]
+        available.pop(ind)
+
+    print(arr)
+    print()
+    print(solved)
+
+
+print("Do you want to: \n1. Generate random game?\n2. Read a game from file?")
+choice = int(input())
+if choice == 2:
+    f = str(input("please enter the file name : "))
+    try:
+        fi = open(f + ".txt", "r")
+    except:
+        print("wrong file name!!")
+    else:
+        c = 0
+        c1 = 0
+        for i in fi:
+            for j in i:
+                if j == ',':
+                    c1 += 1
+                elif j == "\n":
+                    continue
+                elif j.isalpha():
+                    print("wrong input, no letters are allowed!!")
+                    sys.exit()
+                elif not j.isalnum():
+                    print("wrong input, unknown symbols are not allowed!!")
+                    sys.exit()
+                else:
+                    if int(j) > 0 and int(j) <= 9:
+                        if solved[c][c1] > 0 or solved[c][c1] < 0:
+                            print("numbers larger than 9 are not allowed!!")
+                            sys.exit()
+                        else:
+                            solved[c][c1] = int(j)
+                            arr[c][c1] = int(j)
+                    else:
+                        print("numbers sould be between 1 and 9 only!!")
+                        sys.exit()
+            c += 1
+            c1 = 0
+    can = Suduko(solved, 0, 0)
+    print(solved)
+    choose = int(input())
+    print("Please Enter What The Mode You Want To Play: /n1. One Player Mode /n2. Two Player Mode")
+    if choose == 1:
+
+
+
+
+
+else:
+    print("Select the dificulty:")
+    print("1. Easy\n2. Medium\n3. Hard")
+    choice = int(input())
+    if choice == 1:
+        generate("easy")
+    elif choice == 2:
+        generate("medium")
+    else:
+        generate("hard")
+
+
+def hint(arr):
+    not_solved = []
+    for i in range(9):
+        for j in range(9):
+            if int(arr[i][j]) == 0:
+                not_solved.append([i, j])
+    l = int(1)
+    r = int(len(not_solved))
+    val = int(rand.randint(l, r))
+    arr[not_solved[val - 1][0]][not_solved[val - 1][1]] = (solved[not_solved[val - 1][0]][not_solved[val - 1][1]])
+
+
+def passes(points1, points2):
+    pass
+
+
+def one_player_mode():
+    points = 0
+    score = 0
+    start = time.time()
+    while True:
+        if arr.all() == solved.all():
+            break
+        for i in range(9):
+            for j in range(9):
+                if (int(arr[i][j]) == 0):
+                    if (j == 0):
+                        print('- ', end="")
+                    else:
+                        print('- ', end="")
+                else:
+                    if (j == 0):
+                        print(int(arr[i][j]), end=" ")
+                    else:
+                        print(int(arr[i][j]), end=" ")
+
+            print('\n')
+        print("Choose one of the following:")
+        print("1. Fill")
+        print("2. Hint")
+        print("3. Solve")
+        x = input()
+        if x == "1":
+            print("Enter row, column, data: ")
+            row = int(input())
+            col = int(input())
+            data = int(input())
+            if row < 1 or col < 1 or row > 9 or col > 9 or data < 1 or data > 9:
+                print("Invalid input")
+                continue
+            if data != int(solved[row - 1][col - 1]):
+                if points < 1:
+                    continue
+                else:
+                    print("Score minus" )
+                    points -= 1
+            else:
+                arr[row - 1][col - 1] = str(data)
+                print("Score plus")
+                points += 1
+        elif x == "2":
+            hint(arr)
+            if points > 1:
+                hint(arr)
+                points -=2
+            else:
+                print("no enough points !")
+        elif x == "3":
+            print("The solution is:")
+            for i in range(9):
+                for j in range(9):
+                    if (int(solved[i][j]) == 0):
+                        if (j == 0):
+                            print('- ', end="")
+                        else:
+                            print('- ', end="")
+                    else:
+                        if (j == 0):
+                            print(int(solved[i][j]), end=" ")
+                        else:
+                            print(int(solved[i][j]), end=" ")
+
+                print('\n')
+            break
+        else:
+            print("Invalid choice")
+    timeTaken = time.time()-start
+    score = int((points/81) * (3600/timeTaken))
+    print("Player Score:" , end =" ")
+    print(score)
+    print("Player Points:" , end = " ")
+    print(points)
+    print("Time Taken:" , end = " ")
+    print(timeTaken)
+
+one_player_mode()
+
+
+def two_player_mode():
+    turn = 1
+    player1 = 0
+    player2 = 0
+    timeP1 = 0
+    timeP2 = 0
+    pointP1=0
+    pointP2=0
+    passed=0
+    while True:
+        if arr.all() == solved.all():
+            break
+        for i in range(9):
+            for j in range(9):
+                if (int(arr[i][j]) == 0):
+                    if (j == 0):
+                        print('- ', end="")
+                    else:
+                        print('- ', end="")
+                else:
+                    if (j == 0):
+                        print(int(arr[i][j]), end=" ")
+                    else:
+                        print(int(arr[i][j]), end=" ")
+
+            print('\n')
+        print("Choose one of the following:")
+        print("1. Fill")
+        print("2. Pass")
+        print("3. Solve")
+        if turn == 1:
+            print("Player one")
+        else:
+            print("Player two")
+        start = time.time()
+        x = input()
+        if x == "1":
+            print("Enter row, column, data: ")
+            row = int(input())
+            col = int(input())
+            data = int(input())
+            end = time.time()
+            if turn == 1:
+                timeP1 += end - start
+            else:
+                timeP2 += end - start
+
+            if row < 1 or col < 1 or row > 9 or col > 9 or data < 1 or data > 9:
+                print("Invalid input")
+                continue
+            if data != int(solved[row - 1][col - 1]):
+                if turn == 1:
+                    if pointP1 < 1:
+                        continue
+                    else:
+                        pointP1 -= 1
+                else:
+                    if pointP2 < 1:
+                        continue
+                    else:
+                        pointP2 -= 1
+            else:
+                if turn == 1:
+                    pointP1 +=1
+                else:
+                    pointP2 += 1
+                arr[row - 1][col - 1] = str(data)
+            passed = 1
+        elif x == "2":
+            if turn == 1:
+                if pointP1 < 1:
+                    print("you don't have enough points")
+                    passed=0
+                    continue
+
+                else:
+                    passed =1
+                    pointP1 -= 1
+            else:
+
+                if pointP2 < 1:
+                    print("you don't have enough points")
+                    passed =0
+                    continue
+                else:
+                    passed = 1
+                    pointP2 -= 1
+        elif x == "3":
+            print("The solution is:")
+            for i in range(9):
+                for j in range(9):
+                    if (int(solved[i][j]) == 0):
+                        if (j == 0):
+                            print('- ', end="")
+                        else:
+                            print('- ', end="")
+                    else:
+                        if (j == 0):
+                            print(int(solved[i][j]), end=" ")
+                        else:
+                            print(int(solved[i][j]), end=" ")
+
+                print('\n')
+            break
+        else:
+            print("Invalid choice")
+        if turn == 1:
+            timeP1 += end - start
+
+        else:
+            timeP2 += end - start
+
+        if passed == 0:
+            turn = turn
+        else:
+            turn = 1-turn
+    print("Player one points:" , end = " ")
+    print(pointP1)
+    print("Player two points:", end=" ")
+    print(pointP2)
+    print("Time Taken For Player one:" , end = " ")
+    print(timeP1)
+    print("Time Taken For Player two:" , end = " ")
+    print(timeP2)
+    score1 = int((pointP1/81)* ((timeP1+timeP2)/timeP1))
+    score2 = int((pointP2 / 81) * ((timeP1 + timeP2) / timeP2))
+    print("Player One Score:" , end = " ")
+    print(score1)
+    print("Player Two Score:" , end = " ")
+    print(score2)
+
+
+
+#two_player_mode()
+#from oneplayer import oneP
+#game = oneP()
+#game.play()

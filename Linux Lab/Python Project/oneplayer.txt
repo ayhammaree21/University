@@ -1,0 +1,113 @@
+import time
+
+from numpy.random.mtrand import rand
+
+from abstract import Abstract
+
+from main import arr, solved, hint
+
+
+class oneP(Abstract):
+    def hint(arr):
+        not_solved = []
+        for i in range(9):
+            for j in range(9):
+                if int(arr[i][j]) == 0:
+                    not_solved.append([i, j])
+        l = int(1)
+        r = int(len(not_solved))
+        val = int(rand.randint(l, r))
+        arr[not_solved[val - 1][0]][not_solved[val - 1][1]] = (solved[not_solved[val - 1][0]][not_solved[val - 1][1]])
+
+        def solve(grid, row, col, num):
+            for x in range(9):
+                if grid[row][x] == num:
+                    return False
+
+            for x in range(9):
+                if grid[x][col] == num:
+                    return False
+
+            startRow = row - row % 3
+            startCol = col - col % 3
+            for i in range(3):
+                for j in range(3):
+                    if grid[i + startRow][j + startCol] == num:
+                        return False
+            return True
+
+        def play(self):
+            points = 0
+            score = 0
+            start = time.time()
+            while True:
+                if arr.all() == solved.all():
+                    break
+                for i in range(9):
+                    for j in range(9):
+                        if (int(arr[i][j]) == 0):
+                            if (j == 0):
+                                print('- ', end="")
+                            else:
+                                print('- ', end="")
+                        else:
+                            if (j == 0):
+                                print(int(arr[i][j]), end=" ")
+                            else:
+                                print(int(arr[i][j]), end=" ")
+
+                    print('\n')
+                print("Choose one of the following:")
+                print("1. Fill")
+                print("2. Hint")
+                print("3. Solve")
+                x = input()
+                if x == "1":
+                    print("Enter row, column, data: ")
+                    row = int(input())
+                    col = int(input())
+                    data = int(input())
+                    if row < 1 or col < 1 or row > 9 or col > 9 or data < 1 or data > 9:
+                        print("Invalid input")
+                        continue
+                    if data != int(solved[row - 1][col - 1]):
+                        if points < 1:
+                            continue
+                        else:
+                            print("Score minus")
+                            points -= 1
+                    else:
+                        arr[row - 1][col - 1] = str(data)
+                        print("Score plus")
+                        points += 1
+                elif x == "2":
+                    hint(arr)
+                    if points > 1:
+                        hint(arr)
+                        points -= 2
+                    else:
+                        print("no enough points !")
+                elif x == "3":
+                    print("The solution is:")
+                    for i in range(9):
+                        for j in range(9):
+                            if (int(solved[i][j]) == 0):
+                                if (j == 0):
+                                    print('- ', end="")
+                                else:
+                                    print('- ', end="")
+                            else:
+                                if (j == 0):
+                                    print(int(solved[i][j]), end=" ")
+                                else:
+                                    print(int(solved[i][j]), end=" ")
+
+                        print('\n')
+                    break
+                else:
+                    print("Invalid choice")
+            timeTaken = time.time() - start
+            score = int((points / 81) * (3600 / timeTaken))
+            print(score)
+            print(points)
+            print(timeTaken)

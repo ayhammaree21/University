@@ -1,0 +1,161 @@
+import time
+
+from numpy.random.mtrand import rand
+
+from abstract import Abstract
+from main import arr, solved
+
+
+class twoP(Abstract):
+    def hint(arr):
+        not_solved = []
+        for i in range(9):
+            for j in range(9):
+                if int(arr[i][j]) == 0:
+                    not_solved.append([i, j])
+        l = int(1)
+        r = int(len(not_solved))
+        val = int(rand.randint(l, r))
+        arr[not_solved[val - 1][0]][not_solved[val - 1][1]] = (solved[not_solved[val - 1][0]][not_solved[val - 1][1]])
+
+        def solve(grid, row, col, num):
+            for x in range(9):
+                if grid[row][x] == num:
+                    return False
+
+            for x in range(9):
+                if grid[x][col] == num:
+                    return False
+
+            startRow = row - row % 3
+            startCol = col - col % 3
+            for i in range(3):
+                for j in range(3):
+                    if grid[i + startRow][j + startCol] == num:
+                        return False
+            return True
+
+    def play(self):
+        turn = 1
+        player1 = 0
+        player2 = 0
+        timeP1 = 0
+        timeP2 = 0
+        pointP1 = 0
+        pointP2 = 0
+        passed = 0
+        while True:
+            if arr.all() == solved.all():
+                break
+            for i in range(9):
+                for j in range(9):
+                    if (int(arr[i][j]) == 0):
+                        if (j == 0):
+                            print('- ', end="")
+                        else:
+                            print('- ', end="")
+                    else:
+                        if (j == 0):
+                            print(int(arr[i][j]), end=" ")
+                        else:
+                            print(int(arr[i][j]), end=" ")
+
+                print('\n')
+            print("Choose one of the following:")
+            print("1. Fill")
+            print("2. Pass")
+            print("3. Solve")
+            if turn == 1:
+                print("Player one")
+            else:
+                print("Player two")
+            start = time.time()
+            x = input()
+            if x == "1":
+                print("Enter row, column, data: ")
+                row = int(input())
+                col = int(input())
+                data = int(input())
+                end = time.time()
+                if turn == 1:
+                    timeP1 += end - start
+                else:
+                    timeP2 += end - start
+
+                if row < 1 or col < 1 or row > 9 or col > 9 or data < 1 or data > 9:
+                    print("Invalid input")
+                    continue
+                if data != int(solved[row - 1][col - 1]):
+                    if turn == 1:
+                        if pointP1 < 1:
+                            continue
+                        else:
+                            pointP1 -= 1
+                    else:
+                        if pointP2 < 1:
+                            continue
+                        else:
+                            pointP2 -= 1
+                else:
+                    if turn == 1:
+                        pointP1 += 1
+                    else:
+                        pointP2 += 1
+                    arr[row - 1][col - 1] = str(data)
+                passed = 1
+            elif x == "2":
+                if turn == 1:
+                    if pointP1 < 1:
+                        print("you don't have enough points")
+                        passed = 0
+                        continue
+
+                    else:
+                        passed = 1
+                        pointP1 -= 1
+                else:
+
+                    if pointP2 < 1:
+                        print("you don't have enough points")
+                        passed = 0
+                        continue
+                    else:
+                        passed = 1
+                        pointP2 -= 1
+            elif x == "3":
+                print("The solution is:")
+                for i in range(9):
+                    for j in range(9):
+                        if (int(solved[i][j]) == 0):
+                            if (j == 0):
+                                print('- ', end="")
+                            else:
+                                print('- ', end="")
+                        else:
+                            if (j == 0):
+                                print(int(solved[i][j]), end=" ")
+                            else:
+                                print(int(solved[i][j]), end=" ")
+
+                    print('\n')
+                break
+            else:
+                print("Invalid choice")
+            if turn == 1:
+                timeP1 += end - start
+
+            else:
+                timeP2 += end - start
+
+            if passed == 0:
+                turn = turn
+            else:
+                turn = 1 - turn
+        print(pointP1)
+        print(pointP2)
+        print(timeP1)
+        print(timeP2)
+        score1 = int((pointP1 / 81) * ((timeP1 + timeP2) / timeP1))
+        score2 = int((pointP2 / 81) * ((timeP1 + timeP2) / timeP2))
+        print(score1)
+        print(score2)
