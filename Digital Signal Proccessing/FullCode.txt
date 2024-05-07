@@ -1,0 +1,431 @@
+import matplotlib.pyplot as plt
+import numpy
+import re
+import numpy as np
+from scipy import signal
+from scipy.io import wavfile
+import pyaudio
+import matplotlib.pyplot as plt
+import numpy as np
+from scipy.io import wavfile
+from scipy.signal import find_peaks
+import numpy
+import matplotlib.pyplot as plt
+from scipy.io import wavfile
+from scipy.signal import butter, lfilter
+
+
+Fs=8000
+t=numpy.arange(0,320)
+charFreq=[['a',400,800,1600],
+                     ['b',400,800,2400],
+                     ['c',400,800,4000],
+                     ['d',400,1200,1600],
+                     ['e',400,1200,2400],
+                     ['f',400,1200,4000],
+                     ['g',400,2000,1600],
+                     ['h',400,2000,2400],
+                     ['i',400,2000,4000],
+                     ['j',600,800,1600],
+                     ['k',600,800,2400],
+                     ['l',600,800,4000],
+                     ['m',600,1200,1600],
+                     ['n',600,1200,2400],
+                     ['o',600,1200,4000],
+                     ['p',600,2000,1600],
+                     ['q',600,2000,2400],
+                     ['r',600,2000,4000],
+                     ['s',1000,800,1600],
+                     ['t',1000,800,2400],
+                     ['u',1000,800,4000],
+                     ['v',1000,1200,1600],
+                     ['w',1000,1200,2400],
+                     ['x',1000,1200,4000],
+                     ['y',1000,2000,1600],
+                     ['z',1000,2000,2400],
+                     [' ',1000,2000,4000]]
+
+def readString():
+    while (True):
+        print("Please Enter a string (words separated by space only): ")
+        s = input(str())
+
+        x = re.findall("[^a-zA-Z ]", s)
+
+        if x or s == "":
+            print("Your input is not correct")
+            continue
+        else:
+            return s
+            break
+
+def saveAndPlayAudio(allstring):
+
+    fs = 8000
+    allstring = numpy.array(allstring)
+    wavfile.write('test.wav', fs, allstring)
+
+    sample_rate, samples = wavfile.read('test.wav')
+    frequencies, times, spectrogram = signal.spectrogram(samples, sample_rate)
+    p = pyaudio.PyAudio()
+    stream = p.open(format=pyaudio.paFloat32,
+                    channels=1,
+                    rate=sample_rate,
+                    output=True)
+
+    stream.write(samples)
+    stream.stop_stream()
+    stream.close()
+    p.terminate()
+
+    print("The wave is saved in (test.wave)\nThank you :)")
+
+def Encoder():
+
+    s=readString()
+
+    encode_string = []
+    t1 = np.arange(0, 320 * len(s), 1)
+
+    for i in range(0, len(s)):
+
+        for j in range(len(charFreq)):
+            if (charFreq[j][0] == s[i]):
+                encode_string.append(
+                    np.cos(2 * np.pi * 100 * t / Fs) + np.cos(2 * np.pi * charFreq[j][1] * t / Fs) + np.cos(
+                        2 * np.pi * charFreq[j][2] * t / Fs) + np.cos(2 * np.pi * charFreq[j][3] * t / Fs))
+            elif (charFreq[j][0].upper() == s[i]):
+                encode_string.append(
+                    np.cos(2 * np.pi * 200 * t / Fs) + np.cos(2 * np.pi * charFreq[j][1] * t / Fs) + np.cos(
+                        2 * np.pi * charFreq[j][2] * t / Fs) + np.cos(2 * np.pi * charFreq[j][3] * t / Fs))
+
+    allstring = []
+    for i in encode_string:
+        for j in i:
+            allstring.append(j)
+
+    saveAndPlayAudio(allstring)
+
+def readFile():
+    while (True):
+        print("please Enter the name of wave file (*.wav)")
+        FileName = input(str())
+
+        test = FileName.split('.')
+        if (len(test) != 2 or test[1] != 'wav'):
+            print("File name is incorrect :(")
+            continue
+        else:
+            break
+    try:
+        samplerate, data = wavfile.read(FileName)
+    except:
+        print("File does not exist :(")
+        exit(0)
+
+    return data
+
+
+def FFTDecoder():
+
+    letters = ""
+    accuracy = 0
+
+    data=readFile()
+
+    length = len(data)
+
+    segmentsNum = int(length / 320)
+
+    for i in range(segmentsNum):
+
+        segment = data[i * 320:i * 320 + 320]
+
+        DFT = abs(np.fft.fft(segment))
+        peaks, _ = find_peaks(DFT, height=2)
+
+        frequnices = (peaks * 25)
+
+        if (len(frequnices >= 4)):
+            arr = frequnices[0:4]
+
+        for k in range(len(charFreq)):
+
+            c = charFreq[k][1:4]
+            c.sort()
+
+            if (len(arr) > 3):
+
+                if (abs(arr[0] - 1000) <= 30 and abs(arr[1] - 2000) <= 30 and abs(arr[2] - 4000) <= 30):
+                    letter = ' '
+                    letters = letters + letter
+                    accuracy = accuracy + 1
+                    break
+
+                elif (abs(c[0] - arr[1]) <= 30 and abs(c[1] - arr[2]) <= 30 and abs(c[2] - arr[3]) <= 30):
+
+                    if (abs(arr[0] - 100) <= 30):
+                        letter = charFreq[k][0].lower()
+                        letters = letters + letter
+                        accuracy = accuracy + 1
+                    elif (abs(arr[0] - 200) <= 30):
+                        letter = charFreq[k][0].upper()
+                        letters = letters + letter
+                        accuracy = accuracy + 1
+                    else:
+                        letter = ' '
+                        letters = letters + letter
+                        accuracy = accuracy + 1
+                    break
+
+    print("The string in audio.wav is: " + letters)
+
+    print("The accuracy is: " + str(accuracy / segmentsNum * 100) + "%")
+
+
+
+def butter_bandpass(lowcut, highcut, fs, order=5):
+    nyq = 0.5 * fs
+    low = lowcut / nyq
+    high = highcut / nyq
+    b, a = butter(order, [low, high], btype='band')
+    return b, a
+
+def butter_bandpass_filter(data, lowcut, highcut, fs, order=5):
+    b, a = butter_bandpass(lowcut, highcut, fs, order=order)
+    y = lfilter(b, a, data)
+    return y
+
+def butter_highpass(cutoff, fs, order=5):
+    nyq = 0.5 * fs
+    normal_cutoff = cutoff / nyq
+    b, a = butter(order, normal_cutoff, btype='high', analog=False)
+    return b, a
+
+def butter_highpass_filter(data, cutoff, fs, order=5):
+    b, a = butter_highpass(cutoff, fs, order=order)
+    y = lfilter(b, a, data)
+    return y
+
+
+
+
+def filter100(data):
+    lowcut = 90.0
+    highcut = 110.0
+    filtered_Signal = butter_bandpass_filter(data, lowcut, highcut, Fs, order=3)
+
+    if(numpy.sum(numpy.power(filtered_Signal,2)) > 1):
+        return True
+    else:
+        return False
+
+
+def filter200(data):
+    lowcut = 190.0
+    highcut = 210.0
+    filtered_Signal = butter_bandpass_filter(data, lowcut, highcut, Fs, order=3)
+
+    if (numpy.sum(numpy.power(filtered_Signal, 2)) > 1):
+        return True
+    else:
+        return False
+
+def filter400(data):
+    lowcut = 390.0
+    highcut = 410.0
+    filtered_Signal = butter_bandpass_filter(data, lowcut, highcut, Fs, order=3)
+
+    if (numpy.sum(numpy.power(filtered_Signal, 2)) > 1):
+        return True
+    else:
+        return False
+
+def filter600(data):
+    lowcut = 590.0
+    highcut = 610.0
+    filtered_Signal = butter_bandpass_filter(data, lowcut, highcut, Fs, order=3)
+
+    if (numpy.sum(numpy.power(filtered_Signal, 2)) > 1):
+        return True
+    else:
+        return False
+
+
+def filter800(data):
+    lowcut = 790.0
+    highcut = 810.0
+    filtered_Signal = butter_bandpass_filter(data, lowcut, highcut, Fs, order=3)
+
+    if (numpy.sum(numpy.power(filtered_Signal, 2)) > 1):
+        return True
+    else:
+        return False
+
+
+def filter1000(data):
+    lowcut = 990.0
+    highcut = 1010.0
+    filtered_Signal = butter_bandpass_filter(data, lowcut, highcut, Fs, order=3)
+
+    if (numpy.sum(numpy.power(filtered_Signal, 2)) > 1):
+        return True
+    else:
+        return False
+
+
+def filter1200(data):
+    lowcut = 1190.0
+    highcut = 1210.0
+    filtered_Signal = butter_bandpass_filter(data, lowcut, highcut, Fs, order=3)
+
+    if (numpy.sum(numpy.power(filtered_Signal, 2)) > 1):
+        return True
+    else:
+        return False
+
+def filter1600(data):
+    lowcut = 1590.0
+    highcut = 1610.0
+    filtered_Signal = butter_bandpass_filter(data, lowcut, highcut, Fs, order=3)
+
+    if (numpy.sum(numpy.power(filtered_Signal, 2)) > 1):
+        return True
+    else:
+        return False
+
+def filter2000(data):
+    lowcut = 1990.0
+    highcut = 2010.0
+    filtered_Signal = butter_bandpass_filter(data, lowcut, highcut, Fs, order=3)
+
+    if (numpy.sum(numpy.power(filtered_Signal, 2)) > 1):
+        return True
+    else:
+        return False
+
+def filter2400(data):
+    lowcut = 2390.0
+    highcut = 2410.0
+    filtered_Signal = butter_bandpass_filter(data, lowcut, highcut, Fs, order=3)
+
+    if (numpy.sum(numpy.power(filtered_Signal, 2)) > 1):
+        return True
+    else:
+        return False
+
+def filter4000(data):
+    cutOff = 3990.0
+    filtered_Signal = butter_highpass_filter(data, cutOff,Fs, order=3)
+
+    if (numpy.sum(numpy.power(filtered_Signal, 2)) > 1):
+        return True
+    else:
+        return False
+
+
+
+
+
+
+def filterDecoder():
+
+    data=readFile()
+    length = len(data)
+    letters = ""
+    segmentsNum = int(length / 320)
+    accuracy = 0
+
+    for i in range(segmentsNum):
+        segment = data[i * 320:i * 320 + 320]
+        counter = 0
+        frequenses = []
+
+        if (filter400(segment)):
+            if counter < 3:
+                frequenses.append(400)
+                counter = counter + 1
+        if (filter600(segment)):
+            if counter < 3:
+                frequenses.append(600)
+                counter = counter + 1
+        if (filter800(segment)):
+            if counter < 3:
+                frequenses.append(800)
+                counter = counter + 1
+        if (filter1000(segment)):
+            if counter < 3:
+                frequenses.append(1000)
+                counter = counter + 1
+        if (filter1200(segment)):
+            if counter < 3:
+                frequenses.append(1200)
+                counter = counter + 1
+        if (filter1600(segment)):
+            if counter < 3:
+                frequenses.append(1600)
+                counter = counter + 1
+        if (filter2000(segment)):
+            if counter < 3:
+                frequenses.append(2000)
+                counter = counter + 1
+        if (filter2400(segment)):
+            if counter < 3:
+                frequenses.append(2400)
+                counter = counter + 1
+        if (filter4000(segment)):
+            if counter < 3:
+                frequenses.append(4000)
+                counter = counter + 1
+
+        if counter == 3:
+
+            for k in range(len(charFreq)):
+                c = charFreq[k][1:4]
+                c.sort()
+
+                if (c == frequenses):
+
+                    if (filter100(segment)):
+                        letters = letters + charFreq[k][0].lower()
+                        accuracy = accuracy + 1
+                    elif (filter200(segment)):
+                        letters = letters + charFreq[k][0].upper()
+                        accuracy = accuracy + 1
+                    else:
+                        letter = ' '
+                        letters = letters + letter
+                        accuracy = accuracy + 1
+
+    print("The string in audio.wav is: " + letters)
+
+    print("The accuracy is: " + str(accuracy / segmentsNum * 100) + "%")
+
+def menu():
+
+
+    while(True):
+        print("\n-------Menu------")
+        print("1- Encode a string")
+        print("2- Decode audio.wav using frequency analysis (FFT)")
+        print("3- Decode audio.wav using Filters")
+        print("4- Exit ")
+
+        inp = input("\nPlease choose the number of operation you need: ")
+        if(int(inp)==1):
+            Encoder()
+        elif(int(inp)==2):
+            FFTDecoder()
+        elif(int(inp)==3):
+            filterDecoder()
+        elif(int(inp)==4):
+            exit(0)
+        else:
+            print("This operation does not exist, Please repeat")
+
+
+menu()
+
+
+
+

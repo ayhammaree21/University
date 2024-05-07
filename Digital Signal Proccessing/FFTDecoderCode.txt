@@ -1,0 +1,108 @@
+import matplotlib.pyplot as plt
+import numpy as np
+from scipy.io import wavfile
+from scipy.signal import find_peaks
+
+letters=""
+accuracy=0
+
+charFreq=[['a',400,800,1600],
+                     ['b',400,800,2400],
+                     ['c',400,800,4000],
+                     ['d',400,1200,1600],
+                     ['e',400,1200,2400],
+                     ['f',400,1200,4000],
+                     ['g',400,2000,1600],
+                     ['h',400,2000,2400],
+                     ['i',400,2000,4000],
+                     ['j',600,800,1600],
+                     ['k',600,800,2400],
+                     ['l',600,800,4000],
+                     ['m',600,1200,1600],
+                     ['n',600,1200,2400],
+                     ['o',600,1200,4000],
+                     ['p',600,2000,1600],
+                     ['q',600,2000,2400],
+                     ['r',600,2000,4000],
+                     ['s',1000,800,1600],
+                     ['t',1000,800,2400],
+                     ['u',1000,800,4000],
+                     ['v',1000,1200,1600],
+                     ['w',1000,1200,2400],
+                     ['x',1000,1200,4000],
+                     ['y',1000,2000,1600],
+                     ['z',1000,2000,2400],
+                     [' ',1000,2000,4000]]
+
+while (True):
+    print("please Enter the name of wave file (*.wav)")
+    FileName=input(str())
+
+    test = FileName.split('.')
+    if (len(test) != 2 or test[1] != 'wav'):
+        print("File name is incorrect :(")
+        continue
+    else:
+        break
+try:
+    samplerate, data = wavfile.read(FileName)
+except:
+    print("File does not exist :(")
+    exit(0)
+
+
+length=len(data)
+
+segmentsNum=int(length/320)
+
+for i in range(segmentsNum):
+
+    segment = data[i*320:i*320+320]
+
+    DFT = abs(np.fft.fft(segment))
+    peaks, _ = find_peaks(DFT, height=2)
+
+    frequnices = (peaks*25)
+
+    if(len(frequnices>=4)):
+        arr=frequnices[0:4]
+
+
+    for k in range(len(charFreq)):
+
+        c=charFreq[k][1:4]
+        c.sort()
+
+        if(len(arr)>3):
+
+            if (abs(arr[0] - 1000) <= 30 and abs(arr[1] - 2000) <= 30 and abs(arr[2] - 4000) <= 30):
+                letter = ' '
+                letters = letters + letter
+                accuracy = accuracy + 1
+                break
+
+            elif(abs(c[0]-arr[1]) <= 30 and abs(c[1] - arr[2]) <= 30 and abs(c[2] - arr[3]) <= 30):
+
+                if (abs(arr[0] - 100) <= 30):
+                    letter = charFreq[k][0].lower()
+                    letters = letters + letter
+                    accuracy = accuracy + 1
+                elif (abs(arr[0] - 200) <= 30):
+                    letter = charFreq[k][0].upper()
+                    letters = letters + letter
+                    accuracy = accuracy + 1
+                else:
+                    letter = ' '
+                    letters = letters + letter
+                    accuracy = accuracy + 1
+                break
+
+
+
+
+
+
+
+print("The string in audio.wav is: "+letters)
+
+print("The accuracy is: "+str(accuracy/segmentsNum*100)+"%")
