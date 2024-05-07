@@ -1,0 +1,11 @@
+THE LCD: it will be connected on port d as shown in the attached image, it will show length of two sheets and the inputs by keypad to make sense in the proccess and syncronize between two machines.
+
+
+THE  KEYPAD: it will be connected on port D as shown in the attached image, for each row each column is checked 
+in order to find which key is pressed on the keypad , when we press 1 will start the encoder and the motors and when 0 will stop  , in the keypad when press 1 it should to start the motors and encoder to make the cutting proccess of machine two and the press 0 will stop the cutting proccess of machine 2
+
+THE Sensors: it will be off at first, the when the program starts it lights up as the door is unlocked.
+
+the motors: the main idea for this that when the cutting opreation start , it must unfold the huge roll , and the motor will on and of based on the encoders to make the cut proccess or to stop.
+the encoder: will count the number of pulses until arrive to the sheet length to make the motor stopped or not , to get the best length we want or we input using the keypad.
+
