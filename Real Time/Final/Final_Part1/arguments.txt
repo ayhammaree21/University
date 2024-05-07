@@ -1,0 +1,10 @@
+Rate_Of_Arrival 300
+Plane_Carries 200
+Luggage 1
+Airport_Luggages 100
+Rate_Of_Luggage 5 
+MiniTruck_Size 4
+conveyor_belts 10
+employees_for_unloading 1
+conveyr_rate 2
+

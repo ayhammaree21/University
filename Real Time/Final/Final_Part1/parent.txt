@@ -1,0 +1,110 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
+#include <sys/types.h>
+#include <sys/wait.h>
+#include <sys/ipc.h>
+#include <sys/shm.h>
+#include <sys/sem.h>
+#include <fcntl.h>
+#include <string.h>
+#include <errno.h>
+
+#define MAX_PASSENGERS 100
+#define MAX_LUGGAGE 5
+#define MAX_EMPLOYEES 10
+
+
+void init_shared_memory();
+void create_employee_processes(int num_employees);
+void employee_process(int employee_id);
+void unload_luggage(int passenger_id, int employee_id);
+void read_configuration()
+
+
+void read_configuration() {
+	    char read[60];
+	    FILE* fptr;
+	    fptr = fopen("arguments.txt", "r");
+	    if (fptr == NULL) {
+		perror("Error while opening the file.\n");
+		exit(-1);
+	    }
+
+	   char token[30];
+	    while (fscanf(fptr, "%s", token) == 1) {
+		if (strcmp(token, "Airport_Luggages") == 0) {
+		    fscanf(fptr, "%d", &Airport_Luggages);
+		   
+		} else if (strcmp(token, "Rate_Of_Arrival") == 0) {
+		    fscanf(fptr, "%d", &Rate_Of_Arrival);
+		} 
+	    }
+
+
+ 	while (fscanf(fptr, "%s", token) == ) {
+		if (strcmp(token, "Milk_Price_Range") == 0) {
+		    fscanf(fptr, "%f", &Milk_Price_Range);
+		   
+		} else if (strcmp(token, "Cheese_Price_Range") == 0) {
+		    fscanf(fptr, "%f", &Cheese_Price_Range);
+		} 
+	    }
+
+	    if (fclose(fptr) != 0) {
+		perror("Error while closing the file.\n");
+		exit(-1);
+	    }
+	}
+
+
+
+
+
+int main() {
+    
+   
+    
+   
+    create_employee_processes(num_employees);
+
+   
+    for (int i = 0; i < num_employees; i++) {
+        wait(NULL);
+    }
+
+    
+
+    return 0;
+}
+
+void init_shared_memory() {
+    
+}
+
+
+void create_employee_processes(int num_employees) {
+    for (int i = 0; i < num_employees; i++) {
+        pid_t pid = fork();
+        if (pid < 0) {
+            
+            perror("Fork error");
+            exit(EXIT_FAILURE);
+        } else if (pid == 0) {
+            
+            employee_process(i);
+            exit(EXIT_SUCCESS);
+        }
+        
+    }
+}
+
+void employee_process(int employee_id) {
+    
+}
+
+void unload_luggage(int passenger_id, int employee_id) {
+   
+}
+
+
