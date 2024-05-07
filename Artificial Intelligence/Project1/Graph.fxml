@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.chart.CategoryAxis?>
+<?import javafx.scene.chart.LineChart?>
+<?import javafx.scene.chart.NumberAxis?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="816.0" prefWidth="1240.0" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.ai_project.GraphController">
+   <center>
+      <VBox prefHeight="200.0" prefWidth="100.0" style="-fx-background-color: dee2ff; -fx-background-radius: 70px;" BorderPane.alignment="CENTER">
+         <BorderPane.margin>
+            <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+         </BorderPane.margin>
+         <children>
+            <HBox alignment="CENTER" prefHeight="76.0" prefWidth="1070.0">
+               <children>
+                  <Label prefHeight="51.0" prefWidth="435.0" text="Gnerations VS Fitness" textFill="#a76bcf">
+                     <font>
+                        <Font name="Berlin Sans FB Demi Bold" size="37.0" />
+                     </font>
+                     <padding>
+                        <Insets left="40.0" />
+                     </padding>
+                  </Label>
+               </children>
+            </HBox>
+            <LineChart fx:id="Chart" prefHeight="637.0" prefWidth="1220.0">
+               <xAxis>
+                  <CategoryAxis fx:id="MonthesInUserChart" label="Generation number" prefHeight="69.0" prefWidth="1142.0" side="BOTTOM">
+                     <tickLabelFont>
+                        <Font name="Berlin Sans FB" size="22.0" />
+                     </tickLabelFont>
+                  </CategoryAxis>
+               </xAxis>
+               <yAxis>
+                  <NumberAxis label="Fitness" side="LEFT" />
+               </yAxis>
+            </LineChart>
+            <HBox alignment="CENTER" prefHeight="56.0" prefWidth="1070.0">
+               <children>
+                  <Label prefHeight="36.0" prefWidth="348.0" text="Number of generations:  " textFill="#2e4290">
+                     <font>
+                        <Font name="Berlin Sans FB Demi Bold" size="31.0" />
+                     </font>
+                  </Label>
+                  <Label fx:id="NumberOfGenerations" text="5000" textFill="#a76bcf">
+                     <font>
+                        <Font name="Berlin Sans FB Demi Bold" size="31.0" />
+                     </font>
+                     <HBox.margin>
+                        <Insets />
+                     </HBox.margin>
+                  </Label>
+                  <HBox prefHeight="56.0" prefWidth="234.0" />
+                  <Label prefHeight="36.0" prefWidth="171.0" text="Best fitness:" textFill="#2e4290">
+                     <font>
+                        <Font name="Berlin Sans FB Demi Bold" size="31.0" />
+                     </font>
+                  </Label>
+                  <Label fx:id="BestFitness" text="5000" textFill="#a76bcf">
+                     <font>
+                        <Font name="Berlin Sans FB Demi Bold" size="31.0" />
+                     </font>
+                  </Label>
+                  <HBox prefHeight="56.0" prefWidth="79.0" />
+               </children>
+            </HBox>
+         </children>
+      </VBox>
+   </center>
+</BorderPane>

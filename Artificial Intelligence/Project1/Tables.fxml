@@ -1,0 +1,220 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.shape.Line?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
+
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="3650.0" prefWidth="1123.0" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.ai_project.TablesController">
+   <center>
+      <VBox prefHeight="3800.0" prefWidth="1123.0" style="-fx-background-color: #FFFFFF;" BorderPane.alignment="CENTER">
+         <children>
+            <VBox alignment="TOP_CENTER" prefHeight="3700.0" prefWidth="1123.0" style="-fx-background-color: feeafa; -fx-background-radius: 50px;">
+               <children>
+                  <HBox alignment="BOTTOM_CENTER" prefHeight="110.0" prefWidth="1123.0">
+                     <children>
+                        <Text fill="#9d8189" strokeType="OUTSIDE" strokeWidth="0.0" text="Choose doctor name:  " wrappingWidth="288.185546875">
+                           <font>
+                              <Font name="Comic Sans MS Bold" size="24.0" />
+                           </font>
+                        </Text>
+                        <ComboBox fx:id="ComboBoxDoctors" prefHeight="37.0" prefWidth="268.0" style="-fx-background-color: #FFFFFF;" />
+                        <Button mnemonicParsing="false" onAction="#btnSelectDoctorOnAction" prefHeight="38.0" prefWidth="66.0" style="-fx-background-color: ffcad4; -fx-background-radius: 40px; -fx-border-radius: 40px; -fx-border-width: 2; -fx-border-color: d8e2dc;" text="Select" textFill="#9d8189">
+                           <HBox.margin>
+                              <Insets left="20.0" />
+                           </HBox.margin>
+                           <font>
+                              <Font name="System Bold" size="14.0" />
+                           </font>
+                        </Button>
+                     </children>
+                     <VBox.margin>
+                        <Insets bottom="20.0" />
+                     </VBox.margin>
+                  </HBox>
+                  <HBox alignment="CENTER" prefHeight="289.0" prefWidth="1123.0">
+                     <children>
+                        <TableView fx:id="DoctorsTableView" prefHeight="253.0" prefWidth="957.0" stylesheets="@../../../Styles/TableStyle.css">
+                           <columns>
+                              <TableColumn fx:id="CourseCode" prefWidth="110.0" text="      COURSE CODE" />
+                              <TableColumn fx:id="CourseName" minWidth="0.0" prefWidth="288.0" text="COURSE NAME" />
+                              <TableColumn fx:id="InstructorName" prefWidth="286.0" text="INSTRUCTOR NAME" />
+                              <TableColumn fx:id="Section" minWidth="0.0" prefWidth="78.0" text="SECTION" />
+                              <TableColumn fx:id="Days" prefWidth="82.0" text="DAYS" />
+                              <TableColumn fx:id="Time" prefWidth="104.0" text="TIME" />
+                           </columns>
+                        </TableView>
+                     </children>
+                  </HBox>
+                  <HBox alignment="BOTTOM_CENTER" prefHeight="132.0" prefWidth="1123.0">
+                     <children>
+                        <Text fill="#9d8189" strokeType="OUTSIDE" strokeWidth="0.0" text="Choose Course name:  " wrappingWidth="288.185546875">
+                           <font>
+                              <Font name="Comic Sans MS Bold" size="24.0" />
+                           </font>
+                        </Text>
+                        <ComboBox fx:id="ComboBoxCourses" prefHeight="37.0" prefWidth="268.0" style="-fx-background-color: #FFFFFF;" />
+                        <Button mnemonicParsing="false" onAction="#btnSelectCourseOnAction" prefHeight="38.0" prefWidth="66.0" style="-fx-background-color: ffcad4; -fx-background-radius: 40px; -fx-border-radius: 40px; -fx-border-width: 2; -fx-border-color: d8e2dc;" text="Select" textFill="#9d8189">
+                           <HBox.margin>
+                              <Insets left="20.0" />
+                           </HBox.margin>
+                           <font>
+                              <Font name="System Bold" size="14.0" />
+                           </font>
+                        </Button>
+                     </children>
+                     <padding>
+                        <Insets bottom="20.0" />
+                     </padding>
+                  </HBox>
+                  <HBox alignment="CENTER" prefHeight="294.0" prefWidth="1123.0">
+                     <children>
+                        <TableView fx:id="CourseTableView" prefHeight="258.0" prefWidth="957.0" stylesheets="@../../../Styles/TableStyle.css">
+                           <columns>
+                              <TableColumn fx:id="CourseCode2" prefWidth="110.0" text="      COURSE CODE" />
+                              <TableColumn fx:id="CourseName2" minWidth="0.0" prefWidth="288.0" text="COURSE NAME" />
+                              <TableColumn fx:id="InstructorName2" prefWidth="286.0" text="INSTRUCTOR NAME" />
+                              <TableColumn fx:id="Section2" minWidth="0.0" prefWidth="78.0" text="SECTION" />
+                              <TableColumn fx:id="Days2" prefWidth="82.0" text="DAYS" />
+                              <TableColumn fx:id="Time2" prefWidth="104.0" text="TIME" />
+                           </columns>
+                        </TableView>
+                     </children>
+                  </HBox>
+                  <HBox alignment="BOTTOM_CENTER" prefHeight="139.0" prefWidth="1123.0">
+                     <children>
+                        <Text fill="#9d8189" strokeType="OUTSIDE" strokeWidth="0.0" text="Second year courses" wrappingWidth="293.185546875">
+                           <font>
+                              <Font name="Comic Sans MS" size="30.0" />
+                           </font>
+                           <HBox.margin>
+                              <Insets bottom="20.0" />
+                           </HBox.margin>
+                        </Text>
+                     </children>
+                     <opaqueInsets>
+                        <Insets bottom="20.0" />
+                     </opaqueInsets>
+                  </HBox>
+                  <HBox alignment="CENTER" prefHeight="658.0" prefWidth="1123.0">
+                     <children>
+                        <TableView fx:id="SecondTableView" prefHeight="416.0" prefWidth="957.0" stylesheets="@../../../Styles/TableStyle.css">
+                           <columns>
+                              <TableColumn fx:id="CourseCode1" prefWidth="110.0" text="      COURSE CODE" />
+                              <TableColumn fx:id="CourseName1" minWidth="0.0" prefWidth="288.0" text="COURSE NAME" />
+                              <TableColumn fx:id="InstructorName1" prefWidth="286.0" text="INSTRUCTOR NAME" />
+                              <TableColumn fx:id="Section1" minWidth="0.0" prefWidth="78.0" text="SECTION" />
+                              <TableColumn fx:id="Days1" prefWidth="82.0" text="DAYS" />
+                              <TableColumn fx:id="Time1" prefWidth="104.0" text="TIME" />
+                           </columns>
+                        </TableView>
+                     </children>
+                  </HBox>
+                  <HBox alignment="BOTTOM_CENTER" prefHeight="139.0" prefWidth="1123.0">
+                     <children>
+                        <Text fill="#9d8189" strokeType="OUTSIDE" strokeWidth="0.0" text="Third year courses" wrappingWidth="293.185546875">
+                           <font>
+                              <Font name="Comic Sans MS" size="30.0" />
+                           </font>
+                           <HBox.margin>
+                              <Insets bottom="20.0" />
+                           </HBox.margin>
+                        </Text>
+                     </children>
+                  </HBox>
+                  <HBox alignment="CENTER" prefHeight="558.0" prefWidth="1123.0">
+                     <children>
+                        <TableView fx:id="ThirdTableView" prefHeight="416.0" prefWidth="957.0" stylesheets="@../../../Styles/TableStyle.css">
+                           <columns>
+                              <TableColumn fx:id="CourseCode11" prefWidth="110.0" text="      COURSE CODE" />
+                              <TableColumn fx:id="CourseName11" minWidth="0.0" prefWidth="288.0" text="COURSE NAME" />
+                              <TableColumn fx:id="InstructorName11" prefWidth="286.0" text="INSTRUCTOR NAME" />
+                              <TableColumn fx:id="Section11" minWidth="0.0" prefWidth="78.0" text="SECTION" />
+                              <TableColumn fx:id="Days11" prefWidth="82.0" text="DAYS" />
+                              <TableColumn fx:id="Time11" prefWidth="104.0" text="TIME" />
+                           </columns>
+                        </TableView>
+                     </children>
+                  </HBox>
+                  <HBox alignment="BOTTOM_CENTER" prefHeight="139.0" prefWidth="1123.0">
+                     <children>
+                        <Text fill="#9d8189" strokeType="OUTSIDE" strokeWidth="0.0" text="Fourth year courses" wrappingWidth="293.185546875">
+                           <font>
+                              <Font name="Comic Sans MS" size="30.0" />
+                           </font>
+                           <HBox.margin>
+                              <Insets bottom="20.0" />
+                           </HBox.margin>
+                        </Text>
+                     </children>
+                  </HBox>
+                  <HBox alignment="CENTER" prefHeight="652.0" prefWidth="1123.0">
+                     <children>
+                        <TableView fx:id="FourthTableView" prefHeight="416.0" prefWidth="957.0" stylesheets="@../../../Styles/TableStyle.css">
+                           <columns>
+                              <TableColumn fx:id="CourseCode111" prefWidth="110.0" text="      COURSE CODE" />
+                              <TableColumn fx:id="CourseName111" minWidth="0.0" prefWidth="288.0" text="COURSE NAME" />
+                              <TableColumn fx:id="InstructorName111" prefWidth="286.0" text="INSTRUCTOR NAME" />
+                              <TableColumn fx:id="Section111" minWidth="0.0" prefWidth="78.0" text="SECTION" />
+                              <TableColumn fx:id="Days111" prefWidth="82.0" text="DAYS" />
+                              <TableColumn fx:id="Time111" prefWidth="104.0" text="TIME" />
+                           </columns>
+                        </TableView>
+                     </children>
+                  </HBox>
+                  <HBox alignment="BOTTOM_CENTER" prefHeight="139.0" prefWidth="1123.0">
+                     <children>
+                        <Text fill="#9d8189" strokeType="OUTSIDE" strokeWidth="0.0" text="Fifth year courses" wrappingWidth="293.185546875">
+                           <font>
+                              <Font name="Comic Sans MS" size="30.0" />
+                           </font>
+                           <HBox.margin>
+                              <Insets bottom="30.0" />
+                           </HBox.margin>
+                        </Text>
+                     </children>
+                  </HBox>
+                  <HBox alignment="CENTER" prefHeight="538.0" prefWidth="1123.0">
+                     <children>
+                        <TableView fx:id="FifthTableView" prefHeight="616.0" prefWidth="957.0" stylesheets="@../../../Styles/TableStyle.css">
+                           <columns>
+                              <TableColumn fx:id="CourseCode1111" prefWidth="110.0" text="      COURSE CODE" />
+                              <TableColumn fx:id="CourseName1111" minWidth="0.0" prefWidth="288.0" text="COURSE NAME" />
+                              <TableColumn fx:id="InstructorName1111" prefWidth="286.0" text="INSTRUCTOR NAME" />
+                              <TableColumn fx:id="Section1111" minWidth="0.0" prefWidth="78.0" text="SECTION" />
+                              <TableColumn fx:id="Days1111" prefWidth="82.0" text="DAYS" />
+                              <TableColumn fx:id="Time1111" prefWidth="104.0" text="TIME" />
+                           </columns>
+                        </TableView>
+                     </children>
+                  </HBox>
+               </children>
+            </VBox>
+         </children>
+      </VBox>
+   </center>
+   <top>
+      <HBox prefHeight="100.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+         <children>
+            <HBox alignment="CENTER" prefHeight="100.0" prefWidth="1411.0" style="-fx-background-color: #FFFFFF;">
+               <children>
+                  <Line endX="100.0" startX="-182.3381805419922" startY="0.20710831880569458" stroke="#9d8189" strokeWidth="2.0" />
+                  <Text fill="#f4acb7" strokeType="OUTSIDE" strokeWidth="0.0" text="  Department Courses  ">
+                     <font>
+                        <Font name="Bauhaus 93" size="40.0" />
+                     </font>
+                  </Text>
+                  <Line endX="142.5" startX="-100.0" stroke="#9d8189" strokeWidth="2.0" />
+               </children>
+            </HBox>
+         </children>
+      </HBox>
+   </top>
+</BorderPane>

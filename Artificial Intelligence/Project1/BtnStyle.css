@@ -1,0 +1,27 @@
+.btn{
+    -fx-background-color:  #efd3d7;
+    -fx-background-radius:20;
+}
+
+
+.btn:hover{
+    -fx-background-color: #db9ba4 ;
+}
+
+.btn:pressed{
+     -fx-background-color: #fbfcfb;
+}
+
+.btn1{
+    -fx-background-color:  #feeafa;
+    -fx-background-radius:20;
+}
+
+
+.btn1:hover{
+    -fx-background-color: #db9ba4 ;
+}
+
+.btn1:pressed{
+    -fx-background-color: #fbfcfb;
+}
