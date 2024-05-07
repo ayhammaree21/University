@@ -1,3 +1,0 @@
-NUMBER_Helper_Process 2
-NUMBER_Spy_Process 2
-THRESHOLD 4
