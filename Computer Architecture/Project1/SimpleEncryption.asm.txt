@@ -1,0 +1,381 @@
+#Al Ayham Maree 1191408
+#Sara Ammar 1191052
+################# Data segment #####################
+.data
+. . .
+
+choice: .byte 
+list: .ASCIIZ "\n\nWelcome to our program \ne : to encryption \nd : to decryption \nx : to exit\nPlease enter your choice:\n"
+enFileTxt: .ASCIIZ "\nPlease input the name of the plain text file:\n"
+inputFileName: .space 100
+cipherFileTxt: .ASCIIZ "\nPlease input the name of the cipher text file:\n"
+outputFileName: .space 100
+shiftTxt: .Asciiz "\nThe shift value is:  "
+success: .Asciiz "\nThe Cipher Text was written successful\n"
+success1: .Asciiz "\nThe Plain Text was written successful\n"
+error: .Asciiz "\nSorry,file doesn't exist please try again :) \n"
+exit: .Asciiz "\nThank you :)\n"
+message: .space 1024
+cipher: .space 1024
+cipherD: .space 1024
+shift: .byte 
+
+################# Code segment #####################
+.text
+.globl main
+main: # main program entry
+
+showList:
+	#Print the list
+	la $a0, list      
+	li $v0, 4               
+	syscall
+
+	#Read user choice
+	li $v0, 12               
+	syscall
+
+	#Store the choice
+	sb $v0,choice  
+
+	lb $a0,choice
+	beq $a0,'e',Encryption
+	beq $a0,'d',Decryption
+	beq $a0,'x',Exit
+
+j showList
+
+#################### Encryption ##################
+Encryption:
+        #Print to ask user about the plain text file
+	la $a0, enFileTxt     
+	li $v0, 4               
+	syscall
+
+	#Reading file name
+	la $a0, inputFileName            
+	li $a1, 100
+	li $v0, 8               
+	syscall
+	
+	# Call remove function 			
+	la $a0, inputFileName	
+	jal remove
+	
+        # Call readfile function 
+        la $t0, inputFileName
+	la $t1, message	
+	jal Readfile
+	
+	#Call function to remove none alphabet characters and convert characters to lower case
+	la $s0,message        
+        la $s2,cipher
+	jal removeNonAlpha
+	
+        # Call function to calculate shift value (the length of the longest word)	
+        la $s0, cipher
+        jal CalculateShift
+        sb $s1,shift
+        
+	#Call function Caesar chiper to encryption the message 
+	la $a0, cipher
+	lb $s1,shift
+        jal CaesarCipher
+        
+        #Print to ask user about the cipher text file
+        la $a0, cipherFileTxt      
+	li $v0, 4               
+	syscall
+	
+	#Reading output file name
+        la $a0, outputFileName            
+        li $a1, 100
+        li $v0, 8               
+        syscall
+        
+        # Call remove function 			
+	la $a0, outputFileName	
+	jal remove
+	
+	# Call WriteOnFile function 
+        la $t0, outputFileName
+	la $t1, cipher	
+	jal WriteOnFile
+	
+	#Print WriteSuccsses text
+        la $a0, success      
+        li $v0, 4               
+        syscall
+       
+       #Clear the message
+        li $s0,0 
+        ClearMessage:
+               lb $a3,message($s0)
+               sb $0,message($s0)
+    	       addi $s0,$s0,1      
+    	       bnez $a3,ClearMessage
+    	#Clear the cipher     
+    	 li $s0,0	
+    	ClearCipher:
+               lb $a3,cipher($s0)
+               sb $0,cipher($s0)
+    		addi $s0,$s0,1      
+    		bnez $a3,ClearCipher
+j showList
+	
+#################  Decryption  ################
+Decryption:
+        
+        #Print to ask user about the cipher text file
+	la $a0, cipherFileTxt      
+	li $v0, 4               
+	syscall
+
+	#Reading file name
+	la $a0, inputFileName            
+	li $a1, 100
+	li $v0, 8
+	syscall
+	
+	# Call remove function 			
+	la $a0, inputFileName	
+	jal remove
+	
+        # Call readfile function 
+        la $t0, inputFileName
+	la $t1, cipherD	
+	jal Readfile
+	
+	# Call function to calculate shift value (the length of the longest word)	
+        la $s0, cipherD
+        jal CalculateShift
+        sb $s1,shift
+
+	#Call function Caesar chiper to decreption the chiper 
+	la $a0, cipherD
+	lb $s1,shift
+        jal CaesarCipherDEC
+        
+        #Print to ask user about the plain text file
+        la $a0, enFileTxt      
+	li $v0, 4               
+	syscall
+        
+        #Reading output file name
+        la $a0, outputFileName            # $a0 = address of outputFileName
+        li $a1, 100
+        li $v0, 8               
+        syscall
+        
+        # Call remove function 			
+	la $a0, outputFileName	
+	jal remove
+	
+	# Call WriteOnFile function 
+        la $t0, outputFileName
+	la $t1, cipherD	
+	jal WriteOnFile
+	
+	#Print WriteSuccsses text
+        la $a0, success1      
+        li $v0, 4               
+        syscall
+        
+        #Clear cipherD
+        li $s0,0	
+    	ClearCipherD:
+               lb $a3,cipherD($s0)
+               sb $0,cipherD($s0)
+    		addi $s0,$s0,1      
+    		bnez $a3,ClearCipherD
+        				
+j showList						
+												
+. . .
+##################   Exit   #################
+Exit:
+la $a0, exit      
+li $v0, 4               
+syscall
+
+li $v0, 10 
+syscall
+
+########################## Error Message ########################
+Error:
+la $a0, error      
+li $v0, 4               
+syscall
+j showList
+
+####################################### Functions #############################################
+
+#Function to remove the newline from the end of file name
+remove:
+    lb $a3,0($a0)    # Load character at index
+    addi $a0,$a0,1      # Increment index
+    bnez $a3,remove     # Loop until the end of string is reached
+    beq $a1,$a0,skip    # Do not remove \n when string = maxlength
+    subiu $a0,$a0,2     # If above not true, Backtrack index to '\n'
+    sb $0, 0($a0)    # Add the terminating character in its place
+skip:
+    jr $ra
+
+# Function to read file
+Readfile:
+	li   $v0, 13       # system call for open file
+	la   $a0, 0($t0)      # board file name
+	li   $a1, 0        # Open for reading
+	syscall            # open a file (file descriptor returned in $v0)
+	beq $v0,-1,Error   #If file does not exist, print error message
+	move $s0, $v0      # save the file descriptor 
+
+	#read from file
+	li   $v0, 14       # system call for read from file
+	move $a0, $s0      # file descriptor 
+	la   $a1, 0($t1)   # address of message to which to read
+	li   $a2, 1024     # hardcoded message length
+	syscall            # read from file
+
+	# Close the file 
+	li   $v0, 16       # system call for close file
+	move $a0, $s0      # file descriptor to close
+	syscall            # close file
+jr $ra
+
+
+#Function to remove none alphabet characters 
+removeNonAlpha:
+    		lb $a3,0($s0)    # Load character at index
+    		beq  $a3,' ',save  #If the character is space keep it
+    		beq  $a3,'\n',save #If the character is newline keep it
+    		
+        # Check if the character is capital letter, convert it to small
+	comparCapital:  bge $a3,'A',LessCZ
+      	     	        j comparSmall
+	LessCZ:          ble $a3,'Z',convertToSmall
+ 
+         # Check if the character is small letter, keep it
+	comparSmall:    bge $a3,'a',LessSz
+                	j next1
+	LessSz:           ble $a3,'z',save
+                	j next1
+	save:
+   		sb $a3,0($s2)
+   		addi $s2,$s2,1
+	next1:
+    		addi $s0,$s0,1      # Increment index
+    		bnez $a3,removeNonAlpha     # Loop until the end of string is reached
+                jr $ra
+                
+       convertToSmall: 
+                addi $a3,$a3,32  #Convert the capital letter to small letter by adding 32
+                j save
+
+   
+#Function to calculate shift value
+CalculateShift:
+  li $t0,0  #t0 is counter to store the word length
+  li $s1,0  #s0 will store the max length
+         Start:
+               lb $a3,0($s0)
+             
+               beq $a3,' ',saveMax #If the character is space, stop count
+               beq $a3,'\n',saveMax #If the character is newline, stop count
+               beqz $a3,saveMax #If the character is zero(end of string), stop count
+             
+               addi $t0,$t0,1  #Increment the counter by 1
+             
+             next2:
+                   addi $s0,$s0,1      # Increment index  
+    	           bnez $a3,Start
+    	            #Print Shift text
+	            la $a0, shiftTxt      
+	            li $v0, 4               
+		    syscall
+
+                    #Print Shift value
+	            move $a0,$s1
+	            li $v0, 1               
+	            syscall
+    	           
+                    jr $ra
+             saveMax:
+                     #If the counter is bigger then max, save it in the max
+                     ble $t0,$s1,zeroCount 
+                     move $s1,$t0             
+             zeroCount: 
+                       li $t0,0  # Make counter zero
+                       j next2   #Continue in the loop
+                          
+#Caesar cipher function 
+CaesarCipher:
+                 lb $a3,0($a0) #Load character address from the message
+                 
+                  beqz $a3,pass  #If the character is zero(end of string), end loop 
+                  beq $a3,' ',next3 #If the character is space, no encryption
+                  beq $a3,'\n',next3 #If the character is newline, no encryption        
+                  subi $a3,$a3,97 #Sub 97 from the character to make it in range(0-25)
+                  add $a3,$a3,$s1 #Add shift value to the character
+                  li  $t0, 26
+                  div $a3, $t0      
+                  mfhi $t1       # Char mod 26
+                  addi $t1,$t1,97 #Add 97 to the mod value to retern the character value
+                  move $a3,$t1 
+                 
+                  next3:
+                    sb $a3,0($a0) # Restore the new value of char
+                    addi $a0,$a0,1# Incremnt address      
+    	            bnez $a3,CaesarCipher
+pass:
+     jr $ra
+                         
+
+WriteOnFile:
+	# Reading file
+	li   $v0, 13       # system call for open file
+	la   $a0, 0($t0)       # board file name
+	li   $a1, 1        # Open for writing
+	syscall            # open a file (file descriptor returned in $v0)
+	move $s0, $v0      # save the file descriptor 
+
+	#read from file
+	li   $v0, 15       # system call for write in file
+	move $a0, $s0      # file descriptor 
+	la   $a1, 0($t1)    # address of message to which to write
+	li   $a2, 1024     # hardcoded message length
+	syscall            # read from file
+
+	# Close the file 
+	li   $v0, 16       # system call for close file
+	move $a0, $s0      # file descriptor to close
+	syscall            # close file
+jr $ra
+
+
+#Function te decreption the cipher 
+CaesarCipherDEC:
+                  lb $a3,0($a0)      #Load character address from the message
+                  beqz $a3,passDEC   #If the character is zero(end of string), end loop 
+                  beq $a3,' ',nextDEC  #If the character is space, no decryption
+                  beq $a3,'\n',nextDEC  #If the character is newline, no decryption          
+                  subi $a3,$a3,97   #Sub 97 from the character to make it in range(0-25)
+                  sub $a3,$a3,$s1  #Sub shift value from the character
+            LessTZ:
+                   bltz $a3,negativeD  # If the value is less than 0, add 26
+            continueD:
+                  li  $t0, 26
+                  div $a3, $t0      
+                  mfhi $t1      # Char mod 26
+                  addi $t1,$t1,97  # Add 97 to the mod value to retern the character value
+                  move $a3,$t1  
+             nextDEC:
+                    sb $a3,0($a0)  # Restore the new value of char
+                    addi $a0,$a0,1  # Incremnt address  
+    	            bnez $a3,CaesarCipherDEC
+    	     negativeD:
+                    addi $a3,$a3,26
+                    j continueD   	                         
+passDEC:
+       jr $ra
+
