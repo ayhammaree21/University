@@ -1,0 +1,94 @@
+#include <stdio.h>
+#include <stdlib.h>
+//AL-Ayham Maree
+//1191408
+// section 2 Mamoun Nawahdah
+
+void Load_Data_From_File();
+void Display_Main_Menu ();
+void Hire_Employee();
+void Fire_Employee();
+void Changing_salaries();
+void Update_Data_To_File();
+void Print_Salaries();
+int main()
+{
+    int c;
+    Display_Main_Menu ();
+    while(c!=5)
+    {
+    scanf("%d",&c);
+        if(c==1)
+        {
+            Hire_Employee();
+            Display_Main_Menu();
+            continue ;
+        }
+        else if(c==2)
+        {
+            Fire_Employee();
+            Display_Main_Menu();
+            continue;
+        }
+        else if(c==3)
+        {
+            Changing_salaries();
+            Display_Main_Menu();
+            continue ;
+
+        }
+        else if(c==4)
+        {
+            Print_Salaries();
+            Display_Main_Menu();
+
+            continue ;
+
+        }
+         else
+         {
+             Display_Main_Menu();
+             continue ;
+
+         }
+
+    }
+    exit(0);
+     return 0;
+}
+void Load_Data_From_File()
+{
+    printf("Load Data From File\n");
+}
+void Update_Data_To_File()
+{
+    printf("Update Data To File\n");
+
+}
+void Changing_salaries()
+{
+    printf("Changing Salaries\n");
+}
+void Print_Salaries()
+{
+    printf("Print Salaries\n");
+
+}
+void Hire_Employee()
+{
+    printf("Hire Employee\n");
+}
+void Fire_Employee()
+{
+    printf("Fire Employee\n");
+}
+void Display_Main_Menu()
+{
+    printf("1- Hire Employee\n");
+    printf("2- Fire Employee\n");
+    printf("3- Changing Employee Salaries\n");
+    printf("4-Print Employee Salaries\n");
+    printf("5-Exit System\n");
+    printf("please enter the number of any operation you need  :  \n");
+
+}

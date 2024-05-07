@@ -1,0 +1,176 @@
+
+//AL-Ayham Maree
+//1191408
+// section 3L Mamoun Nawahdah#include <stdio.h>
+#include <stdio.h>
+#include <stdlib.h>
+#define Maxsize 51
+#include <stdio.h>
+#include <stdlib.h>
+#define Maxsize 51
+void Load_Data_From_File(char name[Maxsize][40],int data[Maxsize][4],int n);
+void Display_Main_Menu();
+void Hire_Employee(char name[Maxsize][40],int data[Maxsize][4],int n);
+void Fire_Employee(char name[Maxsize][40],int data[Maxsize][4],int n);
+void Changing_Salaries(char name[Maxsize][40],int data[Maxsize][4],int n);
+void Update_Data_To_File(char name[Maxsize][40],int data[Maxsize][4],int n);
+void Print_Salaries(char names[Maxsize][40],int data[Maxsize][4],int n);
+int number;
+int main()
+{
+    int x ;
+    char name[Maxsize][40];
+    int data[Maxsize][4];
+    FILE *infile;
+    infile=fopen("num.txt","r");
+    fscanf(infile,"%d",&number);
+    Load_Data_From_File(name,data,number);
+
+    while(x!=5)
+    {
+        Display_Main_Menu ();
+    scanf("%d",&x);
+        if(x==1)
+        {
+            Hire_Employee(name,data,number);
+            Display_Main_Menu();
+            continue ;
+        }
+        else if(x==2)
+        {
+            Fire_Employee(name,data,number);
+            Display_Main_Menu();
+            continue;
+        }
+        else if(x==3)
+        {
+    Changing_Salaries(name,data,number);
+    Display_Main_Menu();
+            continue ;
+        }
+        else if(x==4)
+        {
+            Print_Salaries(name,data,number);
+            Display_Main_Menu();
+            continue ;
+        }
+         else if(x!=1 && x!=2 && x!=3 && x!=4 && x!=5)
+         {
+             printf(" UNKNOWN OPERATION, PLEASE TRY AGAIN.........\n");
+             Display_Main_Menu();
+             continue;
+         }
+
+         break;
+    }
+   Update_Data_To_File(name,data,number);
+    exit(0);
+     return 0;
+}
+void Load_Data_From_File(char name[Maxsize][40],int data[Maxsize][4],int n)
+{
+FILE *j;
+j=fopen("employee.txt","r");
+int i=1;
+int x=1;
+while (!feof(j)){
+    fgets(name[i],40,j);
+    i++;
+    fscanf(j,"%d%d%d%d\n",&data[x][0],&data[x][1],&data[x][2],&data[x][3]);
+    x++;
+}
+}
+void Display_Main_Menu()
+{
+    printf("Please Select Any Operation You Need(1-5):\n\n");
+    printf("1-Hire an employee\n");
+    printf("2-Fire an employee\n");
+    printf("3-Changing salaries\n");
+    printf("4-Print salaries\n");
+    printf("5-Exit System\n");
+}
+void Hire_Employee(char name[Maxsize][40],int data[Maxsize][4],int n)
+{
+if (n<Maxsize){
+    data[n+1][1]=n+1;
+    printf("Enter Employee name\n");
+    scanf("%s",name[n+1]);
+    printf("Enter employee salary\n");
+    scanf("%d",&data[n+1][2]);
+    printf("Enter the hire year\n");
+    scanf("%d",&data[n+1][3]);
+    data[n+1][4]=0;
+    number++;
+}
+else
+    printf("No space to hire a new employee\n");
+}
+void Fire_Employee(char name[Maxsize][40],int data[Maxsize][4],int n)
+{
+FILE *y=fopen("employee.txt","r+");
+    int t=1,a;
+    while (t<=n){
+    fscanf(y,"%d",&data[t][0]);
+    t++;
+    }
+    printf("Enter employee number: ");scanf("%d",&a);
+    for (t=1; t<=n; t++)
+    {
+        if (a==data[t][0]);
+        break;
+    }
+    if (t<=n)
+    {
+        printf("Enter fire year: ");
+        scanf("%d",&data[t][3]);
+    }
+    else
+        printf("WRONG ID!!\n");
+}
+void Changing_Salaries(char name[Maxsize][40],int data[Maxsize][4],int n)
+{
+    FILE*g;
+    g =fopen("employee.txt","r+");
+ int b=1,o;
+    while (b<=n){
+    fscanf(g,"%d",&data[b][0]);
+    b++;
+    }
+    printf("Enter employee number: ");scanf("%d",&o);
+    for (b=1; b<=n; b++){
+        if (o==data[b][0]){
+    if (b<=n){
+    printf("Enter new salary: ");scanf("%d",&data[b][1]);}
+    else
+        printf("WRONG ID!!\n");
+    }
+    }
+    }
+void Print_Salaries(char name[Maxsize][40],int data[Maxsize][4],int n)
+{
+  int r=1;
+  while (r<=n)
+  {
+      if (data[r][3]==0){
+      printf("Employee name :%s",name[r]);printf("Employee number :%d\n",data[r][0]);printf("Employee salary :%d\n\n",data[r][1]);}
+      r++;
+  }
+}
+void Update_Data_To_File(char name[Maxsize][40],int data[Maxsize][4],int n)
+{
+     FILE *infile;
+     infile=fopen("num.txt","w");
+       fprintf(infile,"%d",n);
+       FILE *j;
+      j=fopen("employee.txt","w");
+   int p=1;
+  while (p <= n)
+  {
+  fprintf(j,"%s",name[p]);
+  fprintf(j,"\n%d\t%d\t%d\t%d\n\n",data[p][0],data[p][1],data[p][2],data[p][3]);
+   p++;
+   }
+printf("Data has been updated\n");
+}
+
+
