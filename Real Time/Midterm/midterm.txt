@@ -1,0 +1,25 @@
+							Animal Farm Simulation
+************************************************************************************************************************************************
+
+	1- Data Structures:Firstly,we must define data structures for the animal farm, animals, and other entities, Create a struct 		for each animal category cows, sheep, goats, hens, horses, and Each struct should include necessary attributes like ID,gender, 		age, milk production, egg production,then define data structures to store the animals, eggs, milk, and other information.
+
+	2- Arguments.txt: we must read user-defined values from arguments.txt file, first step is open and read the arguments.txt file to 		retrieve user-defined values that mentioned in the paper for the simulation parameters, then parse the file to extract and assign the 		values to appropriate variables or data structures in the our C program.
+
+	3- Proccess_And_Thread_Creation: the important mission of us is to utilize the concept of processes and threads to achieve parallelism 		and concurrent execution between animals and the member cateogries, by use this steps create separate processes for each animal 	category (bulls & cows, sheep, goats, roosters & hens). and the most important thing for Parallelsim and concurrent execution is 		within each process, assign threads to represent individual animals of that category
+
+	4- Process_Creation_forking: we will Create processes for each animal category and use process creation mechanisms  like fork() in C 		to make separate processes for each animal category and each process will handle a specific animal category, allowing for independent 		work and live for each animal and the production of it.
+
+	5- Thread_Creation:we will assign threads to each member of the category and within each process, create threads to represent 		individual animals within that category and the main specification of each thread like to allocate a separate thread for each animal 		and assign them specific attributes and behaviors.
+
+	6- Communication_Mechansims: in this step we must work on the communication between the member of the category and the animals or 		between threads and processes and to utilize the commuination mentioned above we can establish communication channels, such as shared 		memory or fifos or pipes or msg queues, to exchange information and synchronize actions and we must implement thread synchronization 		technique likemutex for threads specifically or semaphores for proccesses and we can use for threads but there are and mutex for 		threads to ensure proper access to shared resources and to Race Condition or Dead-Lock avoidnce and to ensure the data integreity for 		each proccess or thread.
+
+	7- Life_Cycle_Of_Chicks: here we control the life cycle of chicks in details by the hens process, hens choose a random number of eggs 		within the user_defined range, and we must store the eggs in appropriate data structures in queues or arrays to simulate egg 		collection, then the main step is to create threads to represent each egg and simulate the incubation process(fork) and after the 		incubation proccess we try to determine the gender of the chick assign to it appropriate attributes, the handling proccess must be 		verfied by handling  the growth and development of chicks into hens or roosters and track the sale or death of chicks based on 		predefined conditions.
+	
+	8- End_Simulation: Finally, we willend the animal farm simulation, set thresholds for overall profit, animal production, and animal 		count. we must track and compare profits, productions, and counts with their  thresholds that read from arguments.txt and if any of 		the thresholds as condtions in code are surpassed or not met ,we must terminate process and clean all resources before ending 		the simulation, use SIGTERM for Proccesses and exit(Status) for threads.
+
+***********************************************************************************************************************************************
+
+
+
+
+

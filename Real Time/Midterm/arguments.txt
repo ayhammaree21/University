@@ -1,0 +1,29 @@
+Animal_production_threshold 100 
+Animal_number_threshold 5
+Number_of_cows 10
+Number_of_female_sheep 15
+Number_of_female_goats 12
+Number_of_eggs_perBox 20
+Number_of_horses 8
+Number_of_mares 5
+Number_of_hens 20
+Egg_Box_Price_Range 2.0 3.0
+Reg_Horse_Price 1000
+Milk_Price_Range 0.50 1.0
+Cheese_Price_Range 5.0 7.0
+Chick_Price 10.0
+Female_Foal_Price 1500
+Arabic_Horse_Price 5000
+Young_Horse_Price 3000
+Old_Horse_Price 2000
+Milk_production_range_cows 10 20
+Milk_production_range_sheep 5 10 
+Milk_production_range_for_goats 3 7 
+Milk_for_1kg_of_cheese 5 
+Eggs_per_week_hens 5 7 
+Price_range_for_eggb 3.0 5.0
+Price_per_horse 1000
+Percentage_of_animals_allowed 50
+Survival_Percentage 80
+Profit_threshold 5000
+
