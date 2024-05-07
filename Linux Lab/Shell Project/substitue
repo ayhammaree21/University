@@ -1,0 +1,35 @@
+indeces=$(grep -n "^$" $1 | cut -d':' -f1)
+if [ $(grep -n "^$" $1 |wc -l | cut -d' ' -f1) -eq 0 ]
+then
+exit
+fi
+indeces=$(echo $indeces|tr ' ' ',' ) 
+sed $(echo $indeces| sed 's/,/d;/g')'d' $1 > data.temp #deletes empty lines 
+n=$(wc -l data.temp|cut -d' ' -f1)
+i=1
+
+sum='0.0'
+while [ $i -le $n ]
+do 
+  sum=$(echo $sum'+'$(sed -n $i'p' data.temp) | bc)
+  i=$(($i+1))
+done
+avg=$(echo "scale=2;"$sum"/"$n'.0' | bc)
+cat $1>data.temp
+rm $1
+n=$(wc -l data.temp | cut -d' ' -f1)
+i=1
+iss=$indeces
+while [ $i -le $n ]
+do 
+  x=$(echo $iss | cut -d',' -f1 )
+  if [ $x -eq $i ]
+  then
+    #statements
+    echo $avg>>$1
+    iss=$(echo $iss | cut -d',' -f2- ) 
+  else
+    echo $(sed -n $i'p' data.temp)>>$1 
+  fi
+  i=$(($i+1))
+done

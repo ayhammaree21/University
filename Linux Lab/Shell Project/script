@@ -1,0 +1,120 @@
+#!/bin/bash
+#Ayham-Maree-1191408
+#Mohammed-Deek-1190556
+echo "Enter the filename: "
+read filename
+
+if [ ! -f "$filename" ] 
+then
+echo "Wrong File Name"
+  exit 2
+fi
+
+if [ ! "${filename: -4}" == ".csv" ]
+ then
+  echo "File format error"
+  exit 2
+fi
+
+cols=$(head -n1 $filename |sed "s/\"[^\"]*\,[^\"]*\"/txt/g" |tr ',' '\12' | wc -l)  
+for i in $(seq 1 $cols);
+do
+checker1=$(cat $filename | sed '1d' | sed -n $i'p' | tr ',' ' ' |grep '.*[A-Za-z].*' | wc -l)
+if [ $checker1 -gt 0 ]
+then
+echo "the data format is wrong"
+exit 2
+fi
+done
+while true
+do
+  printf "\nD: for dimension
+C: for compute statistics
+S: for substitution
+E: Exit\n"
+printf "\nEnter Your Choice:"
+  read choice
+choice=$(echo $choice|tr '[a-z]' '[A-Z]')  
+if [ $choice = "D" ] 
+then
+sed -i '/^$/d' $filename
+cols=$(head -1 $filename |sed "s/\"[^\"]*\,[^\"]*\"/txt/g"|tr ',' '\12' | wc -l)  
+rows=$(cat $filename | wc -l)
+echo "rows X columns = $((rows - 1)) X $cols"
+fi
+
+if [ $choice = "C" ]
+then
+rm statistics.csv
+cols=$(head -n1 $filename |sed "s/\"[^\"]*\,[^\"]*\"/txt/g" |tr ',' '\12' | wc -l)  
+rows=$(expr $(cat $filename | wc -l) - 1)
+printf "Min  "
+printf "Min" >> statistics.csv
+  for i in $(seq 1 $cols);
+do
+min=$(sed '1d' $filename | cut -d',' -f$i | sort -n | head -1)
+printf "%10.7g" $min
+printf ",%10.7g" $min >> statistics.csv
+done
+  printf "\nMax  "
+  printf "\nMax" >> statistics.csv
+for i in $(seq 1 $cols);
+do
+max=$(sed '1d' $filename | cut -d',' -f$i | sort -nr | head -1)
+printf "%10.7g" $max
+printf ",%10.7g" $max >> statistics.csv
+done
+
+  printf "\nMean "
+  printf "\nMean" >> statistics.csv
+  for i in $(seq 1 $cols);
+  do
+  	total=$(cat $filename | sed '1d' | cut -d',' -f$i | paste -s -d'+'| bc )
+  	
+
+   
+mean=$(echo "scale=5; $total / $rows" | bc)
+
+    printf "%10.7g" $mean
+    printf ",%10.7g" $mean >> statistics.csv
+  done
+
+  printf "\nSTDEV"
+  printf "\nSTDEV" >> statistics.csv
+  for i in $(seq 1 $cols);
+  do
+    total=$(cat $filename | sed '1d' | cut -d',' -f$i | paste -s -d'+'| bc )
+mean=$(echo "scale=5; $total / $rows" | bc)
+stdsum=$(cat $filename | sed '1d' | cut -d',' -f$i | tr -d ' '| tr '\12' ' ' | sed "s/\([^ ]*\) /\(\1 - $mean \)^2 +/g" )
+    stdsum=$(echo $stdsum' 0' | bc )
+    stdev=$(echo "scale=5;sqrt("$stdsum'/('$rows'-1))' | bc)
+    printf "%10.7g" $stdev
+    printf ",%10.7g" $stdev >> statistics.csv
+  done
+  printf "\n"
+  printf "\n" >> statistics.csv
+fi
+if [ $choice = "S" ] 
+then
+printf "\nSubstituting\n"
+filename='data.csv'
+sed '1d' $filename >dd.temp
+filesname=""
+for i in $(seq 1 $cols);
+  do
+cat dd.temp| cut -d',' -f"$i" > l"$i".temp
+./substitue l"$i".temp
+filesname=$filesname" l"$i".temp"
+done 
+sed -n '1p' $filename > ans.csv
+paste -d',' $filesname >> ans.csv
+cat ans.csv > data.csv
+rm ans.csv
+cat data.csv
+fi
+if [ $choice = "E" ]
+then
+echo "Thanks For Using Our Program :) "
+exit 0
+fi
+done
