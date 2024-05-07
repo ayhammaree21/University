@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.RadioButton?>
+<?import javafx.scene.control.Spinner?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.shape.Line?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="721.0" prefWidth="1042.0" style="-fx-background-color: #F5F5F5;" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.Controller">
+   <children>
+      <VBox layoutX="68.0" layoutY="172.0" prefHeight="354.0" prefWidth="313.0" spacing="30.0" style="-fx-border-color: black; -fx-border-radius: 20px;">
+         <children>
+            <HBox prefHeight="39.0" prefWidth="354.0">
+               <children>
+                  <VBox prefHeight="60.0" prefWidth="100.0" spacing="15.0">
+                     <children>
+                        <Button mnemonicParsing="false" onAction="#btnBrowseOnAction" prefHeight="26.0" prefWidth="83.0" stylesheets="@../button.css" text="Browse" />
+                        <Button mnemonicParsing="false" onAction="#btnReadOnAction" prefHeight="26.0" prefWidth="82.0" stylesheets="@../button.css" text="Read" />
+                     </children>
+                  </VBox>
+                  <TextField fx:id="textFieldPathFile" prefHeight="26.0" prefWidth="171.0" promptText="Path for the file" stylesheets="@../textField.css">
+                     <HBox.margin>
+                        <Insets top="40.0" />
+                     </HBox.margin></TextField>
+               </children>
+            </HBox>
+            <HBox prefHeight="46.0" prefWidth="236.0" spacing="23.0">
+               <children>
+                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Time Quantaum">
+                     <font>
+                        <Font name="System Bold" size="12.0" />
+                     </font></Text>
+                  <Spinner fx:id="spinnerTimeQuantaum" prefHeight="26.0" prefWidth="79.0" />
+               </children>
+            </HBox>
+            <HBox prefHeight="46.0" prefWidth="236.0" spacing="40.0">
+               <children>
+                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Memory Size">
+                     <font>
+                        <Font name="System Bold" size="12.0" />
+                     </font></Text>
+                  <Spinner fx:id="spinnerMemorySize" prefHeight="26.0" prefWidth="79.0" />
+               </children>
+            </HBox>
+            <HBox prefHeight="18.0" prefWidth="202.0" spacing="50.0">
+               <children>
+                  <RadioButton fx:id="radioBtnSecondChance" mnemonicParsing="false" prefHeight="18.0" prefWidth="142.0" text="SecondChanceFIFO">
+                     <font>
+                        <Font name="System Bold" size="12.0" />
+                     </font></RadioButton>
+                  <RadioButton fx:id="radioBtnClock" mnemonicParsing="false" text="Clock">
+                     <font>
+                        <Font name="System Bold" size="12.0" />
+                     </font></RadioButton>
+               </children>
+            </HBox>
+            <Button mnemonicParsing="false" onAction="#btnRunOnAction" prefHeight="26.0" prefWidth="85.0" stylesheets="@../Style/button.css" text="Run">
+               <VBox.margin>
+                  <Insets left="85.0" />
+               </VBox.margin></Button>
+         </children>
+         <padding>
+            <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+         </padding>
+      </VBox>
+      <TableView fx:id="tabelView1" layoutX="486.0" layoutY="195.0" prefHeight="200.0" prefWidth="510.0">
+        <columns>
+          <TableColumn fx:id="pId" prefWidth="75.0" text="Pid" />
+          <TableColumn fx:id="numberOfFaults" prefWidth="75.0" text="#faults" />
+            <TableColumn fx:id="start" prefWidth="93.60003662109375" text="start(arrivel)" />
+            <TableColumn fx:id="finish" prefWidth="65.5999755859375" text="finish" />
+            <TableColumn fx:id="turnAround" prefWidth="93.5999755859375" text="turnAround" />
+            <TableColumn fx:id="waitTime" prefWidth="108.0" text="waitTime" />
+        </columns>
+      </TableView>
+      <TableView fx:id="tabelView2" layoutX="567.0" layoutY="485.0" prefHeight="200.0" prefWidth="348.0">
+         <columns>
+            <TableColumn fx:id="traces" prefWidth="96.0" text="Traces" />
+            <TableColumn fx:id="process" prefWidth="144.800048828125" text="process" />
+            <TableColumn fx:id="trueFalse" prefWidth="107.199951171875" text="true/false" />
+         </columns>
+      </TableView>
+      <Text layoutX="627.0" layoutY="166.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Process Status">
+         <font>
+            <Font name="Bookman Old Style Bold" size="30.0" />
+         </font></Text>
+      <VBox alignment="CENTER" layoutX="68.0" layoutY="572.0" prefHeight="120.0" prefWidth="314.0" style="-fx-border-color: black; -fx-border-radius: 20px;">
+         <children>
+            <HBox prefHeight="46.0" prefWidth="250.0" spacing="20.0">
+               <children>
+                  <Label text="total Page Faults">
+                     <font>
+                        <Font name="System Bold" size="12.0" />
+                     </font>
+                  </Label>
+                  <TextField fx:id="textFieldTotalFaults" prefHeight="30.0" prefWidth="147.0" stylesheets="@../Style/textField.css" />
+               </children>
+            </HBox>
+            <HBox prefHeight="30.0" prefWidth="257.0" spacing="45.0">
+               <children>
+                  <Label text="total Cycles ">
+                     <font>
+                        <Font name="System Bold" size="12.0" />
+                     </font>
+                  </Label>
+                  <TextField fx:id="textFieldTotalCycles" prefHeight="30.0" prefWidth="147.0" stylesheets="@../Style/textField.css" />
+               </children>
+            </HBox>
+         </children>
+         <padding>
+            <Insets left="20.0" right="20.0" />
+         </padding>
+      </VBox>
+      <Line endX="-19.814208984375" endY="7.62939453125E-6" layoutX="101.0" layoutY="71.0" startX="-100.0" stroke="#a11f39" strokeWidth="2.0" />
+      <HBox layoutX="225.0" layoutY="48.0" prefHeight="63.0" prefWidth="290.0" spacing="6.0">
+         <children>
+            <Text fill="#30475e" strokeType="OUTSIDE" strokeWidth="0.0" text="Virtual" wrappingWidth="129.60000000000014">
+               <font>
+                  <Font name="Bauhaus 93" size="43.0" />
+               </font>
+               <HBox.margin>
+                  <Insets bottom="-20.0" />
+               </HBox.margin>
+            </Text>
+            <Text fill="#f05454" strokeType="OUTSIDE" strokeWidth="0.0" text="Memory">
+               <font>
+                  <Font name="Bauhaus 93" size="43.0" />
+               </font>
+               <HBox.margin>
+                  <Insets />
+               </HBox.margin>
+            </Text>
+         </children>
+      </HBox>
+      <ImageView fitHeight="150.0" fitWidth="200.0" layoutX="46.0" layoutY="-3.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@../Images/cpu.png" />
+         </image>
+      </ImageView>
+      <Line endX="407.0" endY="6.400001525878906" layoutX="635.0" layoutY="69.0" startX="-103.61419677734375" startY="6.400001525878906" stroke="#a11f39" strokeWidth="2.0" />
+      <Text layoutX="632.0" layoutY="456.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Memory View" wrappingWidth="217.800537109375">
+         <font>
+            <Font name="Bookman Old Style Bold" size="30.0" />
+         </font>
+      </Text>
+   </children>
+</AnchorPane>
