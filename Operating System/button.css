@@ -1,0 +1,35 @@
+.button {
+    -fx-font: 13px "Fantasy";
+    -fx-font-weight: bold;
+    -fx-padding: 10;
+    -fx-background-color: #ffffff;
+    -fx-border-radius: 30px;
+    -fx-background-radius:30px ;
+    -fx-border-color: #F05454;
+    -fx-border-width: 2px;
+
+}
+
+
+.button:hover{
+
+    -fx-font: 13px "Fantasy";
+    -fx-padding: 10;
+    -fx-background-color: #F05454;
+    -fx-border-radius: 30px;
+    -fx-background-radius:30px ;
+    -fx-border-color: #F05454;
+    -fx-border-width: 2px;
+}
+
+.button:pressed{
+
+    -fx-font: 13px "Fantasy";
+    -fx-padding: 10;
+    -fx-background-color: #f03232;
+    -fx-border-radius: 30px;
+    -fx-background-radius:30px ;
+    -fx-border-color: #f03232;
+    -fx-border-width: 2px;
+
+}

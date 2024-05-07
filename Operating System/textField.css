@@ -1,0 +1,17 @@
+.text-field {
+    -fx-background-color: #bbbbbe;
+    -fx-background-radius: 20px;
+    -fx-prompt-text-fill: #000 ;
+    -fx-border-color: #f05454;
+    -fx-border-radius: 10px;
+    -fx-border-width: 2px;
+}
+
+.text-field:focused {
+    -fx-background-color: #bbbbbe;
+    -fx-background-radius: 20px;
+    -fx-prompt-text-fill: #000 ;
+    -fx-border-color: #f05454;
+    -fx-border-radius: 10px;
+    -fx-border-width: 2px;
+}

@@ -16,8 +16,10 @@
 <?import javafx.scene.shape.Line?>
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
+<?import javafx.scene.control.ToggleGroup?>
+<?import javafx.*?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="721.0" prefWidth="1042.0" style="-fx-background-color: #F5F5F5;" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.Controller">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="721.0" prefWidth="1042.0" style="-fx-background-color: #F5F5F5;" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Main">
    <children>
       <VBox layoutX="68.0" layoutY="172.0" prefHeight="354.0" prefWidth="313.0" spacing="30.0" style="-fx-border-color: black; -fx-border-radius: 20px;">
          <children>
@@ -25,11 +27,11 @@
                <children>
                   <VBox prefHeight="60.0" prefWidth="100.0" spacing="15.0">
                      <children>
-                        <Button mnemonicParsing="false" onAction="#btnBrowseOnAction" prefHeight="26.0" prefWidth="83.0" stylesheets="@../button.css" text="Browse" />
-                        <Button mnemonicParsing="false" onAction="#btnReadOnAction" prefHeight="26.0" prefWidth="82.0" stylesheets="@../button.css" text="Read" />
+                        <Button mnemonicParsing="false" onAction="#btnBrowseOnAction" prefHeight="26.0" prefWidth="83.0" stylesheets="@../src/button.css" text="Browse" />
+                        <Button mnemonicParsing="false" onAction="#btnReadOnAction" prefHeight="26.0" prefWidth="82.0" stylesheets="@../src/button.css" text="Read" />
                      </children>
                   </VBox>
-                  <TextField fx:id="textFieldPathFile" prefHeight="26.0" prefWidth="171.0" promptText="Path for the file" stylesheets="@../textField.css">
+                  <TextField fx:id="textFieldPathFile" prefHeight="26.0" prefWidth="171.0" promptText="Path for the file" stylesheets="@../src/textField.css">
                      <HBox.margin>
                         <Insets top="40.0" />
                      </HBox.margin></TextField>
@@ -41,7 +43,10 @@
                      <font>
                         <Font name="System Bold" size="12.0" />
                      </font></Text>
-                  <Spinner fx:id="spinnerTimeQuantaum" prefHeight="26.0" prefWidth="79.0" />
+                  <Spinner fx:id="spinnerTimeQuantaum" prefHeight="26.0" prefWidth="79.0"/>
+                
+                       
+                 
                </children>
             </HBox>
             <HBox prefHeight="46.0" prefWidth="236.0" spacing="40.0">
@@ -52,20 +57,43 @@
                      </font></Text>
                   <Spinner fx:id="spinnerMemorySize" prefHeight="26.0" prefWidth="79.0" />
                </children>
+               
             </HBox>
             <HBox prefHeight="18.0" prefWidth="202.0" spacing="50.0">
                <children>
-                  <RadioButton fx:id="radioBtnSecondChance" mnemonicParsing="false" prefHeight="18.0" prefWidth="142.0" text="SecondChanceFIFO">
-                     <font>
+            
+                     
+                     
+                      <fx:define>
+        <ToggleGroup fx:id="group" />
+                </fx:define>
+
+    <RadioButton fx:id="radioBtnSecondChance" text="SecondChanceFIFO" toggleGroup="$group" prefHeight="18.0" prefWidth="142.0" >
+       <font>
                         <Font name="System Bold" size="12.0" />
-                     </font></RadioButton>
-                  <RadioButton fx:id="radioBtnClock" mnemonicParsing="false" text="Clock">
-                     <font>
+                     </font>
+       
+       
+    </RadioButton>
+
+    <RadioButton fx:id="radioBtnClock" text="Clock" toggleGroup="$group" >
+    
+     <font>
                         <Font name="System Bold" size="12.0" />
-                     </font></RadioButton>
+                     </font>
+    
+       
+    </RadioButton>
+                     
+                     
+                     
+                     
+                     
+                     
                </children>
             </HBox>
-            <Button mnemonicParsing="false" onAction="#btnRunOnAction" prefHeight="26.0" prefWidth="85.0" stylesheets="@../Style/button.css" text="Run">
+            
+            <Button mnemonicParsing="false" onAction="#btnRunOnAction" prefHeight="26.0" prefWidth="85.0" stylesheets="@../src/button.css" text="Run">
                <VBox.margin>
                   <Insets left="85.0" />
                </VBox.margin></Button>
@@ -76,19 +104,19 @@
       </VBox>
       <TableView fx:id="tabelView1" layoutX="486.0" layoutY="195.0" prefHeight="200.0" prefWidth="510.0">
         <columns>
-          <TableColumn fx:id="pId" prefWidth="75.0" text="Pid" />
-          <TableColumn fx:id="numberOfFaults" prefWidth="75.0" text="#faults" />
-            <TableColumn fx:id="start" prefWidth="93.60003662109375" text="start(arrivel)" />
-            <TableColumn fx:id="finish" prefWidth="65.5999755859375" text="finish" />
-            <TableColumn fx:id="turnAround" prefWidth="93.5999755859375" text="turnAround" />
-            <TableColumn fx:id="waitTime" prefWidth="108.0" text="waitTime" />
+          <TableColumn fx:id="pId" prefWidth="75.0" text="PID" />
+          <TableColumn fx:id="numberOfFaults" prefWidth="75.0" text="#Faults" />
+            <TableColumn fx:id="start" prefWidth="93.60003662109375" text="Arrival time" />
+            <TableColumn fx:id="finish" prefWidth="65.5999755859375" text="Finish time" />
+            <TableColumn fx:id="turnAround" prefWidth="93.5999755859375" text="Turn around time" />
+            <TableColumn fx:id="waitTime" prefWidth="108.0" text="Wait time" />
         </columns>
       </TableView>
-      <TableView fx:id="tabelView2" layoutX="567.0" layoutY="485.0" prefHeight="200.0" prefWidth="348.0">
+      <TableView fx:id="tabelView2" layoutX="486.0" layoutY="485.0" prefHeight="200.0" prefWidth="510.0">
          <columns>
-            <TableColumn fx:id="traces" prefWidth="96.0" text="Traces" />
-            <TableColumn fx:id="process" prefWidth="144.800048828125" text="process" />
-            <TableColumn fx:id="trueFalse" prefWidth="107.199951171875" text="true/false" />
+            <TableColumn fx:id="process_ID" prefWidth="170.0" text="Process ID" />
+            <TableColumn fx:id="page_ID" prefWidth="170.0" text="Page number" />
+            <TableColumn fx:id="trueFalse" prefWidth="170.0" text="true/false(Bit referrence)" />
          </columns>
       </TableView>
       <Text layoutX="627.0" layoutY="166.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Process Status">
@@ -99,22 +127,22 @@
          <children>
             <HBox prefHeight="46.0" prefWidth="250.0" spacing="20.0">
                <children>
-                  <Label text="total Page Faults">
+                  <Label text="Total page faults">
                      <font>
                         <Font name="System Bold" size="12.0" />
                      </font>
                   </Label>
-                  <TextField fx:id="textFieldTotalFaults" prefHeight="30.0" prefWidth="147.0" stylesheets="@../Style/textField.css" />
+                  <TextField fx:id="textFieldTotalFaults" prefHeight="30.0" prefWidth="147.0" stylesheets="@../src/textField.css" />
                </children>
             </HBox>
             <HBox prefHeight="30.0" prefWidth="257.0" spacing="45.0">
                <children>
-                  <Label text="total Cycles ">
+                  <Label text="Total cycles ">
                      <font>
                         <Font name="System Bold" size="12.0" />
                      </font>
                   </Label>
-                  <TextField fx:id="textFieldTotalCycles" prefHeight="30.0" prefWidth="147.0" stylesheets="@../Style/textField.css" />
+                  <TextField fx:id="textFieldTotalCycles" prefHeight="30.0" prefWidth="147.0" stylesheets="@../src/textField.css" />
                </children>
             </HBox>
          </children>
@@ -145,7 +173,7 @@
       </HBox>
       <ImageView fitHeight="150.0" fitWidth="200.0" layoutX="46.0" layoutY="-3.0" pickOnBounds="true" preserveRatio="true">
          <image>
-            <Image url="@../Images/cpu.png" />
+            <Image url="@../src/Images/cpu.png" />
          </image>
       </ImageView>
       <Line endX="407.0" endY="6.400001525878906" layoutX="635.0" layoutY="69.0" startX="-103.61419677734375" startY="6.400001525878906" stroke="#a11f39" strokeWidth="2.0" />
